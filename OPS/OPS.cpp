@@ -19,13 +19,20 @@ public:
 	}
 	void push(Stack* &p_begin,string x) {
 		Stack * p;
-		p = p_begin;
-		while (p->next != nullptr) {
-			p = p->next;
+		if (size(p_begin) == 0) {
+			p_begin = create();
+			p_begin->data = x;
 		}
-		p->next = new Stack;
-		p->data = x;
-		p->next->next = nullptr;
+		else {
+			p = p_begin;
+			while (p->next != nullptr) {
+				p = p->next;
+			}
+			p->next = new Stack;
+			p->data = x;
+			p->next->next = nullptr;
+		}
+		
 
 
 	}
@@ -80,7 +87,8 @@ public:
 		p = p_begin;
 		if (size(p_begin) == 1) {
 			Stack* t = p_begin;
-			p_begin = create();
+			//p_begin = create();
+			//p_begin = nullptr;
 			delete t;
 		}
 		else {
@@ -89,7 +97,8 @@ public:
 				p = p->next;
 			}
 			n = p;
-			delete p->next->next;
+			int x = size(p_begin);
+			delete p->next;
 			n->next = nullptr;
 		}
 		
@@ -132,13 +141,45 @@ struct Calculator
 			}
 		}
 	}
-	double operationsa_procces(Stack* p_begin) {
-		double ot;
-		while (stack.size(p_begin) > 0) {
-			ot = ot + stoi(stack.top(p_begin));
+	void operationsa_procces(Stack* p_begin,string operation) {
+		if (operation == "+") {
+			double a =  stoi(stack.top(p_begin));
 			stack.pop(p_begin);
+			cout << a << endl;
+			double b = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			cout << b << endl;
+			stack.push(p_begin, to_string(b+a));
 		}
-		stack.push(p_begin, to_string(ot));
+		else  if (operation == "-") {
+			double a = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			double b = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			stack.push(p_begin, to_string(b - a));
+		}
+		else  if (operation == "*") {
+			double a = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			double b = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			stack.push(p_begin, to_string(b * a));
+		}
+		else  if (operation == "/") {
+			double a = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			double b = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			stack.push(p_begin, to_string(b / a));
+		}
+		else  if (operation == "^") {
+			double a = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			double b = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			stack.push(p_begin, to_string(b / a));
+		}
+		
 	}
 	void sort_station() {
 
@@ -156,15 +197,14 @@ struct Calculator
 				stack.push(p_begin, word);
 			}
 			else {
-				while (stack.size(p_begin) > 0) {
-					ot = ot + stoi(stack.top(p_begin));
-					stack.pop(p_begin);
+					operationsa_procces(p_begin, "+");
 				}
-				stack.push(p_begin, to_string(ot));
-			}
 			
 		}
-		//stack.print_List(p_begin);
+
+		stack.print_List(p_begin);
+		//ot = stoi(stack.top(p_begin));
+		//stack.pop(p_begin);
 		return ot;
 	}
 };
@@ -175,7 +215,7 @@ int main()
 	string da;
 	 bool k = false;
 	 Calculator cal;
-	 cout << cal.stack_machine("1 1 100  +") << endl;;
+	 cout << cal.stack_machine("1 100 +") << endl;;
 	 ///stack<string>x;
 	 //cout << cal.get_digit("012+1212").second << endl;
 	 /*
