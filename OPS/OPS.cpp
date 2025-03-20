@@ -78,29 +78,15 @@ struct Calculator
 			return 4;
 		}
 	}
-	pair<string,int> get_digit(string x, int i = 0) {
-		string xi;
-		pair<string, int> digit;
-		for (i; i < x.size(); i++) {
-			xi = x[i];
-			if (operations.count(xi) == 0) {
-				digit.first = digit.first + xi;
-			}
-			else {
-				digit.second = i;
-				return digit;
-			}
-		}
-	}
-	void operationsa_procces(Stack* p_begin,string operation) {
+	void operationsa_procces(Stack* p_begin, string operation, bool one_opertion = false) {
 		if (operation == "+") {
-			double a =  stoi(stack.top(p_begin));
+			double a = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
 			double b = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
-			stack.push(p_begin, to_string(b+a));
+			stack.push(p_begin, to_string(b + a));
 		}
-		else  if (operation == "-") {
+		else  if (operation == "-" && one_opertion == false) {
 			double a = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
 			double b = stoi(stack.top(p_begin));
@@ -126,18 +112,75 @@ struct Calculator
 			stack.pop(p_begin);
 			double b = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
-			stack.push(p_begin, to_string(pow(b,a)));
+			stack.push(p_begin, to_string(pow(b, a)));
 		}
-		else  if (operation == "-" && stack.isEmpty(p_begin)) {
+		else  if (operation == "-" && one_opertion) {
+			stack.pop(p_begin);
 			double a = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
-			stack.push(p_begin, to_string(-a));
+			stack.push(p_begin, to_string(a * -1));
+		}
+
+	}
+	pair<string, int> get_digit(string x, int i = 0) {
+		string xi;
+		pair<string, int> digit;
+		digit.first = "";
+		for (i; i < x.size(); i++) {
+			xi = x[i];
+			if (isdigit(x[i])) {
+				digit.first = digit.first + xi;
+			}
+			else {
+				digit.second = i;
+				break;
+			}
+		}
+		return digit;
+
+	}
+	pair<string, int> get_text(string xv, int j = 0) {
+		string xi;
+		pair<string, int> text;
+		//text.first = "fuck";
+		text.first = "";
+		for (j; j < xv.size(); j++) {
+			xi = xv[j];
+			if (!isdigit(xv[j])) {
+				text.first = text.first + xi;
+			}
+			else {
+				//cout << "dfdf" << endl;
+				text.second = j;
+				break;
+			}
+		}
+		return text;
+	}
+	string sort_station(string expression) {
+		string output = "";
+		Stack* p_top = stack.create();
+		pair<string, int>digit;
+		pair<string, int>text;
+		digit.second = 0;
+		int size = expression.size();
+		for (int i = 0; i <=size; i++) {
+			digit = get_digit(expression,i);
+			cout << digit.first << endl;
+			text = get_text(expression, digit.second);
+			//cout << text.first << endl;
+			i = text.second+1;
+			if (output == "") {
+				output = digit.first;
+			}
+			else {
+				output = output + " " + digit.first;
+			}
+			
+			
 		}
 		
-	}
-	void sort_station() {
-
-
+		return output;
 	}
 	double stack_machine(string expression) {
 		string word;
@@ -150,7 +193,18 @@ struct Calculator
 				//cout << stack.top(p_top) << endl;
 			}
 			else {
+				if (stack.isEmpty(p_top)) {
+					string opernd = word;// записываем унарную операцию
+					ex_ss >> word;
+					stack.push(p_top, word);
+					stack.push(p_top,word);
+					operationsa_procces(p_top, opernd,true);
+				}
+				else {
 					operationsa_procces(p_top, word);
+				}
+				
+				
 				}
 			
 		}
@@ -167,7 +221,13 @@ int main()
 	 bool k = false;
 	 //cout << "sdsd" << endl;
 	 Calculator cal;
-	 cout << cal.stack_machine("- 3 4 + 5") << endl;;
+	// cout << cal.stack_machine("- 3 6 -") << endl;;
+	 //string x = cal.get_digit("12244+").first;
+	 cout << cal.sort_station("1+2") << endl;
+	// cout << x << endl;
+	// cout << "NEW" << endl;
+	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
+	 //cout << y << endl;
 	 ///stack<string>x;
 	 //cout << cal.get_digit("012+1212").second << endl;
 	 /*
