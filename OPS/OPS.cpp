@@ -180,8 +180,14 @@ struct Calculator
 		for (j; j < xv.size(); j++) {
 			xi = xv[j];
 			if (!isdigit(xv[j])) {
-				text.first = text.first + xi;
-				text.second = text.second + 1;
+				if (operations.count(xi) == 1 && operations.count(text.first) == 1) {
+					break;
+				}
+				else {
+					text.first = text.first + xi;
+					text.second = text.second + 1;
+				}
+				
 			}
 			else {
 				//cout << "dfdf" << endl;
@@ -194,67 +200,57 @@ struct Calculator
 
 	string sort_station(string expression) {
 		string output = "";
-		//Stack* p_top = stack1.create();
-		stack<std::string> stack;
-		pair<string, int>digit;
-		pair<string, int>text;
-		string y;
+		stack<string> op_stack;
 		int size = expression.size();
-		for (int i = 0; i < size;)
-		{
-			//cout << i << endl;
-			//cout <<"Did" <<bool(isdigit(expression[i])) << endl;
+
+		for (int i = 0; i < size;) {
 			if (isdigit(expression[i])) {
-				digit = get_digit(expression, i);
+				//если число то 
+				pair<string, int> digit = get_digit(expression, i);
 				if (output == "") {
 					output = digit.first;
 				}
 				else {
-					output = output + " " + digit.first;
+					output += " " + digit.first;
 				}
-
 				i = i + digit.second;
-				if (i >= size) {
-					break;
-				}
 			}
 			else {
-
-				text = get_text(expression, i);
+				pair<string, int> text = get_text(expression, i);
 				string x = text.first;
+				i =i + text.second;
 				//cout << x << endl;
-				//cout << get_priority(x) << endl;
-				if ((stack.empty() || (text.first == "(") || get_priority(x) > get_priority(stack.top()))) {
-					stack.push(x);
+				if (x == "(" || op_stack.empty()|| get_priority(x) > get_priority(op_stack.top())) {
+					op_stack.push(x);
+					//cout << x << endl;
 				}
-				else if (get_priority(x) <= get_priority(stack.top())) {
-					while (get_priority(x) <= get_priority(stack.top())||stack.empty()) {
-						y = stack.top();
-						output = output + " " + y;
-						stack.pop();
+				else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x)>0) {
+					while (!op_stack.empty() &&
+						get_priority(x) <= get_priority(op_stack.top())) {
+						output += " " + op_stack.top();
+						op_stack.pop();
 					}
-					stack.push(x);
-
+					op_stack.push(x);
 				}
-				i = i + text.second;
-				//i = i + text.second;
+				else if (x == ")") {
+					while (op_stack.empty() || op_stack.top() == "(") {
+						output += " " + op_stack.top();
+						op_stack.pop();
+					}
+					//op_stack.pop();
+					// Удаляем ")"
+					if (op_stack.empty()) {
+						throw runtime_error("Mismatched parentheses");
+					}
+					//op_stack.pop(); // Удаляем "("
+				}
 			}
-			//text.second = 0;
-			//digit.second = 0;
-
-
-
-		}
-		//cout << stack.isEmpty(p_top) << endl;
-		while (!stack.empty()) {
-			y = stack.top();
-			cout << y << "D" << endl;
-			output = output + " " + y;
-			stack.pop();
 		}
 
-
-
+		while (!op_stack.empty()) {
+			output += " " + op_stack.top();
+			op_stack.pop();
+		}
 
 		return output;
 	}
@@ -268,9 +264,10 @@ int main()
 	 bool k = false;
 	 //cout << "sdsd" << endl;
 	 Calculator cal;
-//cout << cal.stack_machine("1 2 + 4 -") << endl;;
+	//cout << cal.stack_machine("1 2 + 4 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
-	 cout << cal.sort_station("1+2+1") << endl;
+	 cout << cal.sort_station("1+1") << endl;
+	 cout << cal.stack_machine("12") << endl;;
 	// cout << x << endl;
 	// cout << "NEW" << endl;
 	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
