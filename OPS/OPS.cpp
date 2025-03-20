@@ -175,7 +175,7 @@ struct Calculator
 		digit.second = 0;
 		for (i; i < x.size(); i++) {
 			xi = x[i];
-			if (isdigit(x[i])) {
+			if (isdigit(x[i]) || xi == "-") {
 				digit.first = digit.first + xi;
 				digit.second = digit.second + 1;
 			}
@@ -235,9 +235,8 @@ struct Calculator
 				string x = text.first;
 				i =i + text.second;
 				//cout << x << endl;
-				if (x == "(" || op_stack.empty()|| get_priority(x) > get_priority(op_stack.top())) {
+				if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
 					op_stack.push(x);
-					//cout << x << endl;
 				}
 				else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x)>0) {
 					while (!op_stack.empty() &&
@@ -289,7 +288,7 @@ int main()
 	//cout << cal.stack_machine("1 2 + 4 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
 	 cout << cal.sort_station("-1") << endl;
-	 cout << cal.stack_machine("tg 5") << endl;;
+	 cout << cal.stack_machine("-1") << endl;;
 	//cout << x << endl;
 	// cout << "NEW" << endl;
 	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
