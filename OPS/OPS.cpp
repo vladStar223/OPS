@@ -221,9 +221,9 @@ int main()
 	 bool k = false;
 	 //cout << "sdsd" << endl;
 	 Calculator cal;
-	// cout << cal.stack_machine("- 3 6 -") << endl;;
+ //cout << cal.stack_machine("1 2 + 4 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
-	 cout << cal.sort_station("1+2") << endl;
+	 //cout << cal.sort_station("1+2") << endl;
 	// cout << x << endl;
 	// cout << "NEW" << endl;
 	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
