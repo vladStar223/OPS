@@ -8,100 +8,50 @@
 //#include <stack>
 using namespace std;
 
+struct Node
+{
+	Node* next = nullptr;
+	string data = "2";
+};
 struct  Stack {
 private:
-    Stack* next = nullptr;
-	string data="2";
+	Node* node = nullptr;
 public:
 	Stack* create() {
-		Stack* p_begin = new Stack;
-		return p_begin;
+		return nullptr;
 	}
-	void push(Stack* &p_begin,string x) {
-		Stack * p;
-		if (size(p_begin) == 0) {
-			p_begin = create();
-			p_begin->data = x;
+	void push(Stack*& p_top, string x) {
+		Node* n = new Node;
+		n->data = x;
+		n->next = nullptr;
+		if (p_top == nullptr) {
+			p_top = new Stack; 
+			p_top->node = n;
 		}
 		else {
-			p = p_begin;
-			while (p->next != nullptr) {
-				p = p->next;
-			}
-			p->next = new Stack;
-			p->data = x;
-			p->next->next = nullptr;
+			n->next = p_top->node;
+			p_top->node = n;
 		}
-		
-
 
 	}
-	void print_List(Stack* p_begin) {
-		Stack* p;
-		p = p_begin;
-		if (p != nullptr) {
-			while (p->next != nullptr) {
-				//cout << p->next << endl;
-				cout << p->data << endl;
-				p = p->next;
-			}
+	string top(Stack* p_top) {
+		if (p_top == nullptr) {
+			throw "Error";
+		}
+		return p_top->node->data;
+	}
+	void pop(Stack*& p_top) {
+		if (p_top == nullptr) {
+			throw "Error";
 		}
 		else {
-			cout << "Stack is null" << endl;
-		}
-		
-	}
-	int size(Stack* p_begin) {
-		Stack* p, n;
-		int i = 0;
-		p = p_begin;
-		if (p != nullptr) {
-			while (p->next != nullptr) {
-				//cout << p->next << endl;
-				i++;
-				//cout << p->data << endl;
-				p = p->next;
-			}
-		}
-		else {
-			i = 0;
-		}
-		return i;
-	}
-	string top(Stack* p_begin) {
-		Stack* p;
-		p = p_begin;
-			string x;
-			x = p->data;
-			while (p->next != nullptr) {
-				//cout << p->next << endl;
-				x = p->data;
-				p = p->next;
-			}
-			return x;
-		
-	}
-	void pop(Stack* &p_begin){
-		Stack* p;
-		Stack* n;
-		p = p_begin;
-		if (size(p_begin) == 1) {
-			Stack* t = p_begin;
-			//p_begin = create();
-			//p_begin = nullptr;
+			Node* t = p_top->node;
+			p_top->node = p_top->node->next;
 			delete t;
 		}
-		else {
-			for (int i = 1; i < size(p_begin); i++)
-			{
-				p = p->next;
-			}
-			n = p;
-			int x = size(p_begin);
-			delete p->next;
-			n->next = nullptr;
-		}
-		
+	}
+	bool isEmpty(Stack*& p_top) {
+		return (p_top == nullptr);
 	}
 	
 
@@ -145,10 +95,8 @@ struct Calculator
 		if (operation == "+") {
 			double a =  stoi(stack.top(p_begin));
 			stack.pop(p_begin);
-			cout << a << endl;
 			double b = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
-			cout << b << endl;
 			stack.push(p_begin, to_string(b+a));
 		}
 		else  if (operation == "-") {
@@ -177,7 +125,12 @@ struct Calculator
 			stack.pop(p_begin);
 			double b = stoi(stack.top(p_begin));
 			stack.pop(p_begin);
-			stack.push(p_begin, to_string(b / a));
+			stack.push(p_begin, to_string(pow(b,a)));
+		}
+		else  if (operation == "-" && stack.isEmpty(p_begin)) {
+			double a = stoi(stack.top(p_begin));
+			stack.pop(p_begin);
+			stack.push(p_begin, to_string(-a));
 		}
 		
 	}
@@ -187,25 +140,22 @@ struct Calculator
 	}
 	double stack_machine(string expression) {
 		string word;
-		Stack* p_begin = stack.create();
-		
-		//stack.print_List(p_begin);
+		Stack *p_top = stack.create();
 		stringstream ex_ss(expression);
 		double ot = 0;// значение по умолчанию
 		while (ex_ss >> word) {
 			if (operations.count(word) == 0) {
-				stack.push(p_begin, word);
+				stack.push(p_top, word);
+				//cout << stack.top(p_top) << endl;
 			}
 			else {
-					operationsa_procces(p_begin, "+");
+					operationsa_procces(p_top, word);
 				}
 			
 		}
-
-		stack.print_List(p_begin);
-		//ot = stoi(stack.top(p_begin));
-		//stack.pop(p_begin);
-		return ot;
+		ot = stoi(stack.top(p_top));
+		stack.pop(p_top);
+		return ot ;
 	}
 };
 int main()
@@ -214,8 +164,9 @@ int main()
 	string data;
 	string da;
 	 bool k = false;
+	 //cout << "sdsd" << endl;
 	 Calculator cal;
-	 cout << cal.stack_machine("1 100 +") << endl;;
+	 cout << cal.stack_machine("- 3 4 + 5") << endl;;
 	 ///stack<string>x;
 	 //cout << cal.get_digit("012+1212").second << endl;
 	 /*
