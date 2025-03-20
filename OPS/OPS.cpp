@@ -61,7 +61,7 @@ struct Calculator
 {
 	Stack stack1;// обьект струкрутра стека
 	const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
-	const set<string> one_operations = { "-"}; // операции доступные сейчас 
+	const set<string> one_operations = {"sin","cos","tg"}; // операции доступные сейчас 
 	int get_priority(string x, int p = 0) {
 		if (x == "(" || x == ")") {
 			return 0;
@@ -116,16 +116,24 @@ struct Calculator
 			stack1.push(p_begin, to_string(pow(b, a)));
 		}
 		else  if (operation == "-" && one_opertion) {
-			stack1.pop(p_begin);
 			double a = stoi(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(a * -1));
 		}
 		else  if (operation == "sin" && one_opertion) {
-			stack1.pop(p_begin);
 			double a = stoi(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(sin(a)));
+		}
+		else  if (operation == "cos" && one_opertion) {
+			double a = stoi(stack1.top(p_begin));
+			stack1.pop(p_begin);
+			stack1.push(p_begin, to_string(cos(a)));
+		}
+		else  if (operation == "tg" && one_opertion) {
+			double a = stoi(stack1.top(p_begin));
+			stack1.pop(p_begin);
+			stack1.push(p_begin, to_string(tan(a)));
 		}
 
 	}
@@ -135,15 +143,14 @@ struct Calculator
 		stringstream ex_ss(expression);
 		double ot = 0;// значение по умолчанию
 		while (ex_ss >> word) {
-			if (operations.count(word) == 0) {
+			if (operations.count(word) == 0 && one_operations.count(word) == 0) {
 				stack1.push(p_top, word);
 				//cout << stack.top(p_top) << endl;
 			}
 			else {
-				if (stack1.isEmpty(p_top)) {
+				if (stack1.isEmpty(p_top)|| one_operations.count(word) == 1) {
 					string opernd = word;// записываем унарную операцию
 					ex_ss >> word;
-					stack1.push(p_top, word);
 					stack1.push(p_top, word);
 					operationsa_procces(p_top, opernd, true);
 				}
@@ -155,7 +162,9 @@ struct Calculator
 			}
 
 		}
-		ot = stoi(stack1.top(p_top));
+		ot = stof(stack1.top(p_top)); 
+		//для большей точности используй 
+		//long double num_ld = std::stold("123.456");
 		stack1.pop(p_top);
 		return ot;
 	}
@@ -239,14 +248,14 @@ struct Calculator
 					op_stack.push(x);
 				}
 				else if (x == ")") {
-					cout << "ss" << endl;
+					//cout << "ss" << endl;
 					while (op_stack.empty() || op_stack.top() != "(") {
-						cout << op_stack.top() << endl;
-						cout << (op_stack.top() == "(") << endl;
+						//cout << op_stack.top() << endl;
+						//cout << (op_stack.top() == "(") << endl;
 						output += " " + op_stack.top();
 						op_stack.pop();
 					}
-					cout << op_stack.top() << endl;
+					//cout << op_stack.top() << endl;
 					op_stack.pop();
 					// Удаляем ")"
 					/*
@@ -279,9 +288,9 @@ int main()
 	 Calculator cal;
 	//cout << cal.stack_machine("1 2 + 4 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
-	 cout << cal.sort_station("(1+1)+5(") << endl;
-	 cout << cal.stack_machine("1 1 + 5 ( +") << endl;;
-	// cout << x << endl;
+	 cout << cal.sort_station("-1") << endl;
+	 cout << cal.stack_machine("tg 5") << endl;;
+	//cout << x << endl;
 	// cout << "NEW" << endl;
 	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
 	 //cout << y << endl;
