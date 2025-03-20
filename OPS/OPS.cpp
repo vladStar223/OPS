@@ -122,6 +122,36 @@ struct Calculator
 		}
 
 	}
+	double stack_machine(string expression) {
+		string word;
+		Stack* p_top = stack.create();
+		stringstream ex_ss(expression);
+		double ot = 0;// значение по умолчанию
+		while (ex_ss >> word) {
+			if (operations.count(word) == 0) {
+				stack.push(p_top, word);
+				//cout << stack.top(p_top) << endl;
+			}
+			else {
+				if (stack.isEmpty(p_top)) {
+					string opernd = word;// записываем унарную операцию
+					ex_ss >> word;
+					stack.push(p_top, word);
+					stack.push(p_top, word);
+					operationsa_procces(p_top, opernd, true);
+				}
+				else {
+					operationsa_procces(p_top, word);
+				}
+
+
+			}
+
+		}
+		ot = stoi(stack.top(p_top));
+		stack.pop(p_top);
+		return ot;
+	}
 	pair<string, int> get_digit(string x, int i = 0) {
 		string xi;
 		pair<string, int> digit;
@@ -182,36 +212,7 @@ struct Calculator
 		
 		return output;
 	}
-	double stack_machine(string expression) {
-		string word;
-		Stack *p_top = stack.create();
-		stringstream ex_ss(expression);
-		double ot = 0;// значение по умолчанию
-		while (ex_ss >> word) {
-			if (operations.count(word) == 0) {
-				stack.push(p_top, word);
-				//cout << stack.top(p_top) << endl;
-			}
-			else {
-				if (stack.isEmpty(p_top)) {
-					string opernd = word;// записываем унарную операцию
-					ex_ss >> word;
-					stack.push(p_top, word);
-					stack.push(p_top,word);
-					operationsa_procces(p_top, opernd,true);
-				}
-				else {
-					operationsa_procces(p_top, word);
-				}
-				
-				
-				}
-			
-		}
-		ot = stoi(stack.top(p_top));
-		stack.pop(p_top);
-		return ot ;
-	}
+	
 };
 int main()
 {
@@ -221,7 +222,7 @@ int main()
 	 bool k = false;
 	 //cout << "sdsd" << endl;
 	 Calculator cal;
- //cout << cal.stack_machine("1 2 + 4 -") << endl;;
+//cout << cal.stack_machine("1 2 + 4 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
 	 //cout << cal.sort_station("1+2") << endl;
 	// cout << x << endl;
