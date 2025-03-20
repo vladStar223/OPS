@@ -121,6 +121,12 @@ struct Calculator
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(a * -1));
 		}
+		else  if (operation == "sin" && one_opertion) {
+			stack1.pop(p_begin);
+			double a = stoi(stack1.top(p_begin));
+			stack1.pop(p_begin);
+			stack1.push(p_begin, to_string(sin(a)));
+		}
 
 	}
 	double stack_machine(string expression) {
@@ -233,15 +239,22 @@ struct Calculator
 					op_stack.push(x);
 				}
 				else if (x == ")") {
-					while (op_stack.empty() || op_stack.top() == "(") {
+					cout << "ss" << endl;
+					while (op_stack.empty() || op_stack.top() != "(") {
+						cout << op_stack.top() << endl;
+						cout << (op_stack.top() == "(") << endl;
 						output += " " + op_stack.top();
 						op_stack.pop();
 					}
-					//op_stack.pop();
+					cout << op_stack.top() << endl;
+					op_stack.pop();
 					// Удаляем ")"
+					/*
+					
 					if (op_stack.empty()) {
 						throw runtime_error("Mismatched parentheses");
 					}
+					*/
 					//op_stack.pop(); // Удаляем "("
 				}
 			}
@@ -266,8 +279,8 @@ int main()
 	 Calculator cal;
 	//cout << cal.stack_machine("1 2 + 4 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
-	 cout << cal.sort_station("1+1") << endl;
-	 cout << cal.stack_machine("12") << endl;;
+	 cout << cal.sort_station("(1+1)+5(") << endl;
+	 cout << cal.stack_machine("1 1 + 5 ( +") << endl;;
 	// cout << x << endl;
 	// cout << "NEW" << endl;
 	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
