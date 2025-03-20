@@ -60,6 +60,7 @@ struct Calculator
 {
 	Stack stack;// обьект струкрутра стека
 	const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
+	const set<string> one_operations = { "-"}; // операции доступные сейчас 
 	int get_priority(string x, int p = 0) {
 		if (x == "(" || x == ")") {
 			return 0;
