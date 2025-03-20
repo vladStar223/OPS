@@ -9,53 +9,64 @@
 //#include <stack>
 using namespace std;
 
-struct Node
-{
-	Node* next = nullptr;
-	string data = "2";
+struct Node {
+	Node* next;
+	string data;
+
+	Node(const string& value) : next(nullptr), data(value) {}  // Явная инициализация
 };
-struct  Stack {
+
+struct Stack {
 private:
-	Node* node = nullptr;
+	Node* top_node = nullptr;  // Вершина стека
+
 public:
-	Stack* create() {
-		return nullptr;
+	// Создание стека (не требуется, можно использовать конструктор)
+	static Stack* create() {
+		return new Stack();
 	}
-	void push(Stack*& p_top, string x) {
-		Node* n = new Node;
-		n->data = x;
-		n->next = nullptr;
-		if (p_top == nullptr) {
-			p_top = new Stack; 
-			p_top->node = n;
-		}
-		else {
-			n->next = p_top->node;
-			p_top->node = n;
-		}
 
+	// Добавление элемента
+	void push(Stack* p_begin,const string& x) {
+		Node* new_node = new Node(x);
+		new_node->next = top_node;
+		top_node = new_node;
 	}
-	string top(Stack* p_top) {
-		if (p_top->node == nullptr) {
-			p_top = nullptr;
-		}
-		return p_top->node->data;
-	}
-	void pop(Stack*& p_top) {
-		if (p_top->node->next == nullptr) {
-			p_top = nullptr;
-		}
-		else {
-			Node* t = p_top->node;
-			p_top->node = p_top->node->next;
-			delete t;
-		}
-	}
-	bool isEmpty(Stack* p_top) {
-		return (p_top == nullptr);
-	}
-	
 
+	// Получение верхнего элемента
+	string top(Stack* p_begin) const {
+		if (isEmpty(p_begin)) {
+			throw runtime_error("Stack is empty");
+		}
+		return top_node->data;
+	}
+
+	// Удаление верхнего элемента
+	void pop(Stack* p_begin) {
+		if (isEmpty(p_begin)) {
+			throw runtime_error("Stack underflow");
+		}
+		Node* temp = top_node;
+		top_node = top_node->next;
+		delete temp;
+	}
+
+	// Проверка на пустоту
+	bool isEmpty(Stack* p_begin) const {
+		return top_node == nullptr;
+	}
+
+	// Очистка стека
+	void clear(Stack* p_begin) {
+		while (!isEmpty(p_begin)) {
+			pop(p_begin);
+		}
+	}
+
+	// Деструктор
+	~Stack() {
+		clear(nullptr);
+	}
 };
 struct Calculator
 {
