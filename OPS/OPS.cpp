@@ -5,6 +5,7 @@
 #include<sstream>
 #include<string>
 #include <set>
+#include <cctype>
 //#include <stack>
 using namespace std;
 
@@ -35,14 +36,14 @@ public:
 
 	}
 	string top(Stack* p_top) {
-		if (p_top == nullptr) {
-			throw "Error";
+		if (p_top->node == nullptr) {
+			p_top = nullptr;
 		}
 		return p_top->node->data;
 	}
 	void pop(Stack*& p_top) {
-		if (p_top == nullptr) {
-			throw "Error";
+		if (p_top->node->next == nullptr) {
+			p_top = nullptr;
 		}
 		else {
 			Node* t = p_top->node;
@@ -50,7 +51,7 @@ public:
 			delete t;
 		}
 	}
-	bool isEmpty(Stack*& p_top) {
+	bool isEmpty(Stack* p_top) {
 		return (p_top == nullptr);
 	}
 	
@@ -126,13 +127,14 @@ struct Calculator
 		string xi;
 		pair<string, int> digit;
 		digit.first = "";
+		digit.second = 0;
 		for (i; i < x.size(); i++) {
 			xi = x[i];
 			if (isdigit(x[i])) {
 				digit.first = digit.first + xi;
+				digit.second = digit.second + 1;
 			}
 			else {
-				digit.second = i;
 				break;
 			}
 		}
@@ -144,14 +146,16 @@ struct Calculator
 		pair<string, int> text;
 		//text.first = "fuck";
 		text.first = "";
+		text.second = 0;
 		for (j; j < xv.size(); j++) {
 			xi = xv[j];
 			if (!isdigit(xv[j])) {
 				text.first = text.first + xi;
+				text.second = text.second + 1;
 			}
 			else {
 				//cout << "dfdf" << endl;
-				text.second = j;
+				//text.second = j;
 				break;
 			}
 		}
@@ -162,23 +166,85 @@ struct Calculator
 		Stack* p_top = stack.create();
 		pair<string, int>digit;
 		pair<string, int>text;
-		digit.second = 0;
+		string y;
 		int size = expression.size();
-		for (int i = 0; i <=size; i++) {
-			digit = get_digit(expression,i);
-			cout << digit.first << endl;
-			text = get_text(expression, digit.second);
-			//cout << text.first << endl;
-			i = text.second+1;
-			if (output == "") {
-				output = digit.first;
+		for (int i = 0; i < size;)
+		{
+			//cout << i << endl;
+			//cout <<"Did" <<bool(isdigit(expression[i])) << endl;
+			if (isdigit(expression[i])) {
+				digit = get_digit(expression, i);
+				if (output == "") {
+					output = digit.first;
+				}
+				else {
+					output = output + " " + digit.first;
+				}
+				
+				i = i + digit.second;
+				if (i >= size) {
+					break;
+				}
 			}
 			else {
-				output = output + " " + digit.first;
+
+				text = get_text(expression, i);
+				string x = text.first;
+				//cout << x << endl;
+				//cout << get_priority(x) << endl;
+				if ((stack.isEmpty(p_top) || (text.first == "(") || get_priority(x) > get_priority(stack.top(p_top)))) {
+					stack.push(p_top, x);
+				}
+				 else if (get_priority(x) <= get_priority(stack.top(p_top))) {
+					while (get_priority(x) <= get_priority(stack.top(p_top))) {
+						y = stack.top(p_top);
+						if (output == "") {
+							output = y;
+						}
+						else {
+							output = output + " " + y;
+						}
+						stack.pop(p_top);
+
+					}
+					stack.push(p_top, x);
+				}
+				 else if (text.first == ")"){
+					while ( "(" == stack.top(p_top) || stack.isEmpty(p_top)) {
+						y = stack.top(p_top);
+						if (output == "") {
+							output = y;
+						}
+						else {
+							output = output + " " + y;
+						}
+						stack.pop(p_top);
+
+					}
+					stack.pop(p_top);
+
+				}
+				 else {
+					cout << "ddf" << endl;
+				}
+				i = i + text.second;
+				//i = i + text.second;
 			}
+			//text.second = 0;
+			//digit.second = 0;
 			
+
 			
 		}
+		//cout << stack.isEmpty(p_top) << endl;
+		while (!stack.isEmpty(p_top)) {
+			y = stack.top(p_top);
+			output = output + " " + y;
+			stack.pop(p_top);
+		}
+			
+			
+			
 		
 		return output;
 	}
@@ -223,10 +289,10 @@ int main()
 	 Calculator cal;
 	// cout << cal.stack_machine("- 3 6 -") << endl;;
 	 //string x = cal.get_digit("12244+").first;
-	 cout << cal.sort_station("1+2") << endl;
+	 cout << cal.sort_station("1+2+3") << endl;
 	// cout << x << endl;
 	// cout << "NEW" << endl;
-	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
+	 //string y = cal.get_text("122+3", cal.get_digit("122+++4").second).first;
 	 //cout << y << endl;
 	 ///stack<string>x;
 	 //cout << cal.get_digit("012+1212").second << endl;
