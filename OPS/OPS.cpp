@@ -80,7 +80,7 @@ struct Calculator
 			return 3;
 		}
 		else if (x == "-" && p == 1) {
-			return 4;
+			return 10;
 		}
 		else if (x == "sin") {
 			return 5;
@@ -206,14 +206,17 @@ struct Calculator
 		text.second = 0;
 		for (j; j < xv.size(); j++) {
 			xi = xv[j];
-			if (!isdigit(xv[j])) {
-				if (operations.count(xi) == 1 && (operations.count(text.first) == 1 || one_operations.count(text.first))) {
-					break;
+			if (operations.count(xi) == 1) {
+				if (text.first.empty()) {
+					text.first = xi;
+					text.second = 1;
 				}
-				else {
+				break;
+			}
+			if (!isdigit(xv[j])) {
+				
 					text.first = text.first + xi;
 					text.second = text.second + 1;
-				}
 				
 			}
 			else {
@@ -305,14 +308,17 @@ int main()
 		 cout << "Input fun" << endl;
 		 cout << "1 is input expression" << endl;
 		 cout << "2 is exit" << endl;
-		 cin >> x;
+		 //cin >> x;
+		 x = "1";
 		 try
 		 {
 			 if (stoi(x) == 1) {
 				 cout << "Input" << endl;
 				 cin >> expression;
 				 sort_station = cal.sort_station(expression);
-
+				 cout << sort_station << endl;
+				 sort_station = "1 sin -1 sin +";
+				 cout << sort_station << endl;
 				 cout << expression << " = " << cal.stack_machine(sort_station) << endl;;
 
 			 }
@@ -322,11 +328,14 @@ int main()
 			 }
 			 else {
 				 cout << "You are Strange" << endl;
+				 k = false;
+				 break;
 			 }
 		 }
 		 catch (const std::exception&)
 		 {
 			 cout <<"Programm criticial finish" << endl;
+			 k = false;
 		 }
 		 
 		 
@@ -335,7 +344,12 @@ int main()
 	 } while (k);
 
 }
-
+/*
+Нужно допилить обработку чтобы условно -1 преврашалось в минус -1 и в опс . а не как сейчас в 1 -
+При таком условии все будет работать
+Ну я так думаю
+Будущий я решит это
+*/
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
