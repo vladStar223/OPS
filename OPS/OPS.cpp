@@ -16,7 +16,9 @@ struct Node
 };
 struct  Stack {
 private:
+	
 	Node* node = nullptr;
+	int size = 0;
 public:
 	Stack* create() {
 		return nullptr;
@@ -33,7 +35,7 @@ public:
 			n->next = p_top->node;
 			p_top->node = n;
 		}
-
+		p_top->size = p_top->size + 1;
 	}
 	string top(Stack* p_top) {
 		if (p_top == nullptr) {
@@ -51,17 +53,19 @@ public:
 			delete t;
 		}
 	}
-	bool isEmpty(Stack*& p_top) {
-		return (p_top == nullptr);
-	}
 	
-
+	bool isEmpty(Stack*& p_top) {
+		return (p_top->node == nullptr);
+	}
+	int get_size(Stack*& p_top) {
+		return p_top->size;
+	}
 };
 struct Calculator
 {
 	Stack stack1;// обьект струкрутра стека
 	const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
-	const set<string> one_operations = {"sin","cos","tg"}; // операции доступные сейчас 
+	const set<string> one_operations = {"sin","cos","tg",}; // операции доступные сейчас 
 	int get_priority(string x, int p = 0) {
 		if (x == "(" || x == ")") {
 			return 0;
@@ -76,62 +80,70 @@ struct Calculator
 			return 3;
 		}
 		else if (x == "-" && p == 1) {
-			return 4;
+			return 10;
+		}
+		else if (x == "sin") {
+			return 5;
 		}
 	}
 	void operationsa_procces(Stack* p_begin, string operation, bool one_opertion = false) {
 		if (operation == "+") {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
-			double b = stoi(stack1.top(p_begin));
+			double b = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(b + a));
 		}
 		else  if (operation == "-" && one_opertion == false) {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
-			double b = stoi(stack1.top(p_begin));
+			double b = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(b - a));
 		}
 		else  if (operation == "*") {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
-			double b = stoi(stack1.top(p_begin));
+			double b = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(b * a));
 		}
 		else  if (operation == "/") {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
-			double b = stoi(stack1.top(p_begin));
+			double b = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(b / a));
 		}
 		else  if (operation == "^") {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
-			double b = stoi(stack1.top(p_begin));
+			double b = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(pow(b, a)));
 		}
 		else  if (operation == "-" && one_opertion) {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(a * -1));
 		}
+		else  if (operation == "+" && one_opertion) {
+			double a = stof(stack1.top(p_begin));
+			stack1.pop(p_begin);
+			stack1.push(p_begin, stack1.top(p_begin));
+		}
 		else  if (operation == "sin" && one_opertion) {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(sin(a)));
 		}
 		else  if (operation == "cos" && one_opertion) {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(cos(a)));
 		}
 		else  if (operation == "tg" && one_opertion) {
-			double a = stoi(stack1.top(p_begin));
+			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(tan(a)));
 		}
@@ -148,11 +160,11 @@ struct Calculator
 				//cout << stack.top(p_top) << endl;
 			}
 			else {
-				if (stack1.isEmpty(p_top)|| one_operations.count(word) == 1) {
-					string opernd = word;// записываем унарную операцию
-					ex_ss >> word;
-					stack1.push(p_top, word);
-					operationsa_procces(p_top, opernd, true);
+				if (stack1.get_size(p_top)<=1 || one_operations.count(word) == 1) {
+					//string opernd = word;// записываем унарную операцию
+					//ex_ss >> word;
+					//stack1.push(p_top, word);
+					operationsa_procces(p_top, word, true);
 				}
 				else {
 					operationsa_procces(p_top, word);
@@ -175,7 +187,7 @@ struct Calculator
 		digit.second = 0;
 		for (i; i < x.size(); i++) {
 			xi = x[i];
-			if (isdigit(x[i])) {
+			if (isdigit(x[i]) || xi == "-") {
 				digit.first = digit.first + xi;
 				digit.second = digit.second + 1;
 			}
@@ -194,14 +206,17 @@ struct Calculator
 		text.second = 0;
 		for (j; j < xv.size(); j++) {
 			xi = xv[j];
-			if (!isdigit(xv[j])) {
-				if (operations.count(xi) == 1 && operations.count(text.first) == 1) {
-					break;
+			if (operations.count(xi) == 1) {
+				if (text.first.empty()) {
+					text.first = xi;
+					text.second = 1;
 				}
-				else {
+				break;
+			}
+			if (!isdigit(xv[j])) {
+				
 					text.first = text.first + xi;
 					text.second = text.second + 1;
-				}
 				
 			}
 			else {
@@ -235,9 +250,8 @@ struct Calculator
 				string x = text.first;
 				i =i + text.second;
 				//cout << x << endl;
-				if (x == "(" || op_stack.empty()|| get_priority(x) > get_priority(op_stack.top())) {
+				if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
 					op_stack.push(x);
-					//cout << x << endl;
 				}
 				else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x)>0) {
 					while (!op_stack.empty() &&
@@ -286,26 +300,56 @@ int main()
 	 bool k = false;
 	 //cout << "sdsd" << endl;
 	 Calculator cal;
-	//cout << cal.stack_machine("1 2 + 4 -") << endl;;
-	 //string x = cal.get_digit("12244+").first;
-	 cout << cal.sort_station("-1") << endl;
-	 cout << cal.stack_machine("tg 5") << endl;;
-	//cout << x << endl;
-	// cout << "NEW" << endl;
-	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
-	 //cout << y << endl;
-	 ///stack<string>x;
-	 //cout << cal.get_digit("012+1212").second << endl;
-	 /*
-	 
+	 string expression;
+	 string sort_station;
+	 string x = "1";
 	 do
 	 {
-		 cout << "Input equation" << endl;
-		 getline(cin, data);
-	 } while (k);
-	 */
-}
+		 cout << "Input fun" << endl;
+		 cout << "1 is input expression" << endl;
+		 cout << "2 is exit" << endl;
+		 //cin >> x;
+		 x = "1";
+		 try
+		 {
+			 if (stoi(x) == 1) {
+				 cout << "Input" << endl;
+				 cin >> expression;
+				 sort_station = cal.sort_station(expression);
+				 cout << sort_station << endl;
+				 sort_station = "1 sin -1 sin +";
+				 cout << sort_station << endl;
+				 cout << expression << " = " << cal.stack_machine(sort_station) << endl;;
 
+			 }
+			 else if (stoi(x) == 2) {
+				 k = true;
+				 break;
+			 }
+			 else {
+				 cout << "You are Strange" << endl;
+				 k = false;
+				 break;
+			 }
+		 }
+		 catch (const std::exception&)
+		 {
+			 cout <<"Programm criticial finish" << endl;
+			 k = false;
+		 }
+		 
+		 
+
+
+	 } while (k);
+
+}
+/*
+Нужно допилить обработку чтобы условно -1 преврашалось в минус -1 и в опс . а не как сейчас в 1 -
+При таком условии все будет работать
+Ну я так думаю
+Будущий я решит это
+*/
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
