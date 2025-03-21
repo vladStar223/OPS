@@ -297,26 +297,43 @@ int main()
 	 bool k = false;
 	 //cout << "sdsd" << endl;
 	 Calculator cal;
-	 cout << cal.sort_station("tg(1)") << endl;
-	 cout << cal.stack_machine("1 tg") << endl;;
-	 //cout << stof("23.5") << endl; // нужно допилить до дробных
-	//cout << cal.stack_machine("1 2 + 4 -") << endl;;
-	 //string x = cal.get_digit("12244+").first;
-	 
-	//cout << x << endl;
-	// cout << "NEW" << endl;
-	 //string y = cal.get_text("122+", cal.get_digit("122+").second).first;
-	 //cout << y << endl;
-	 ///stack<string>x;
-	 //cout << cal.get_digit("012+1212").second << endl;
-	 /*
-	 
+	 string expression;
+	 string sort_station;
+	 string x = "1";
 	 do
 	 {
-		 cout << "Input equation" << endl;
-		 getline(cin, data);
+		 cout << "Input fun" << endl;
+		 cout << "1 is input expression" << endl;
+		 cout << "2 is exit" << endl;
+		 cin >> x;
+		 try
+		 {
+			 if (stoi(x) == 1) {
+				 cout << "Input" << endl;
+				 cin >> expression;
+				 sort_station = cal.sort_station(expression);
+
+				 cout << expression << " = " << cal.stack_machine(sort_station) << endl;;
+
+			 }
+			 else if (stoi(x) == 2) {
+				 k = true;
+				 break;
+			 }
+			 else {
+				 cout << "You are Strange" << endl;
+			 }
+		 }
+		 catch (const std::exception&)
+		 {
+			 cout <<"Programm criticial finish" << endl;
+		 }
+		 
+		 
+
+
 	 } while (k);
-	 */
+
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
