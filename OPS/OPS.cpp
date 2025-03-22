@@ -80,7 +80,7 @@ struct Calculator
 			return 3;
 		}
 		else if (x == "-" && p == 1) {
-			return 10;
+			return 1;
 		}
 		else if (x == "sin") {
 			return 5;
@@ -187,7 +187,7 @@ struct Calculator
 		digit.second = 0;
 		for (i; i < x.size(); i++) {
 			xi = x[i];
-			if (isdigit(x[i]) || xi == "-") {
+			if (isdigit(x[i])) {
 				digit.first = digit.first + xi;
 				digit.second = digit.second + 1;
 			}
@@ -232,21 +232,77 @@ struct Calculator
 		string output = "";
 		stack<string> op_stack;
 		int size = expression.size();
-
+		string xi = "";
+		pair<string, int> digit;
+		pair<string, int> text;
 		for (int i = 0; i < size;) {
-			if (isdigit(expression[i])) {
-				//если число то 
-				pair<string, int> digit = get_digit(expression, i);
-				if (output == "") {
-					output = digit.first;
+			xi = expression[i];
+			if (isdigit(expression[i]) || xi=="-") {
+				if (xi == "-") {
+					i = i + 1;
+					if (isdigit(expression[i])) {
+						digit = get_digit(expression, i);
+						if (output == "") {
+							output = "-" + digit.first;
+						}
+						else {
+							output += " -" + digit.first;
+						}
+						i = i + digit.second;
+					}
+					else {
+						text = get_text(expression, i);
+						string x = text.first;
+						i = i + text.second;
+						if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
+							op_stack.push(x);
+						}
+						else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
+							while (!op_stack.empty() &&
+								get_priority(x) <= get_priority(op_stack.top())) {
+								output += " -1" + op_stack.top() + "*";
+								op_stack.pop();
+							}
+							op_stack.push(x);
+						}
+						else if (x == ")") {
+							//cout << "ss" << endl;
+							while (op_stack.empty() || op_stack.top() != "(") {
+								//cout << op_stack.top() << endl;
+								//cout << (op_stack.top() == "(") << endl;
+								output += " " + op_stack.top();
+								op_stack.pop();
+							}
+							//cout << op_stack.top() << endl;
+							op_stack.pop();
+							// Удаляем ")"
+							/*
+
+							if (op_stack.empty()) {
+								throw runtime_error("Mismatched parentheses");
+							}
+							*/
+							//op_stack.pop(); // Удаляем "("
+						}
+
+					}
 				}
 				else {
-					output += " " + digit.first;
+					//если число то 
+					digit = get_digit(expression, i);
+					if (output == "") {
+						output = digit.first;
+					}
+					else {
+						output += " " + digit.first;
+					}
+					i = i + digit.second;
 				}
-				i = i + digit.second;
+				
+				
 			}
 			else {
-				pair<string, int> text = get_text(expression, i);
+				text = get_text(expression, i);
 				string x = text.first;
 				i =i + text.second;
 				//cout << x << endl;
@@ -314,10 +370,10 @@ int main()
 		 {
 			 if (stoi(x) == 1) {
 				 cout << "Input" << endl;
-				 cin >> expression;
-				 sort_station = cal.sort_station(expression);
-				 cout << sort_station << endl;
-				 sort_station = "1 sin -1 sin +";
+				 //cin >> expression;
+				 //sort_station = cal.sort_station(expression);
+				 //cout << sort_station << endl;
+				 sort_station = "-1-1";
 				 cout << sort_station << endl;
 				 cout << expression << " = " << cal.stack_machine(sort_station) << endl;;
 
