@@ -263,6 +263,7 @@ struct Calculator
 						string x = text.first;
 						i = i + text.second;
 						if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
+							x = "-1 " + x + " *";
 							op_stack.push(x);
 						}
 						else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
@@ -296,7 +297,7 @@ struct Calculator
 					}
 				}
 				else {
-					prev_minus = false;
+					//prev_minus = false;
 					//если число то 
 					digit = get_digit(expression, i);
 					if (output == "") {
