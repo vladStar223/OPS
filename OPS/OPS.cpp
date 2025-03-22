@@ -160,7 +160,7 @@ struct Calculator
 				//cout << stack.top(p_top) << endl;
 			}
 			else {
-				if (stack1.get_size(p_top)<=1 || one_operations.count(word) == 1) {
+				if (stack1.get_size(p_top) <= 1 || one_operations.count(word) == 1) {
 					//string opernd = word;// записываем унарную операцию
 					//ex_ss >> word;
 					//stack1.push(p_top, word);
@@ -174,7 +174,7 @@ struct Calculator
 			}
 
 		}
-		ot = stof(stack1.top(p_top)); 
+		ot = stof(stack1.top(p_top));
 		//для большей точности используй 
 		//long double num_ld = std::stold("123.456");
 		stack1.pop(p_top);
@@ -214,10 +214,10 @@ struct Calculator
 				break;
 			}
 			if (!isdigit(xv[j])) {
-				
-					text.first = text.first + xi;
-					text.second = text.second + 1;
-				
+
+				text.first = text.first + xi;
+				text.second = text.second + 1;
+
 			}
 			else {
 				//cout << "dfdf" << endl;
@@ -235,17 +235,20 @@ struct Calculator
 		string xi = "";
 		pair<string, int> digit;
 		pair<string, int> text;
-		 bool prev_minus = false;
+		bool prev_minus = false;
 		for (int i = 0; i < size;) {
 			xi = expression[i];
-			if (isdigit(expression[i]) || xi=="-") {
+			if (isdigit(expression[i]) || xi == "-") {
 				if (xi == "-") {
 					i = i + 1;
 					if (isdigit(expression[i])) {
 						digit = get_digit(expression, i);
 						if (output == "") {
 							output = "-" + digit.first;
-							prev_minus = true;
+							
+								prev_minus = true;
+
+							
 						}
 						else {
 							if (prev_minus) {
