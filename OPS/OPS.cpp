@@ -235,6 +235,7 @@ struct Calculator
 		string xi = "";
 		pair<string, int> digit;
 		pair<string, int> text;
+		 bool prev_minus = false;
 		for (int i = 0; i < size;) {
 			xi = expression[i];
 			if (isdigit(expression[i]) || xi=="-") {
@@ -244,9 +245,16 @@ struct Calculator
 						digit = get_digit(expression, i);
 						if (output == "") {
 							output = "-" + digit.first;
+							prev_minus = true;
 						}
 						else {
-							output += " -" + digit.first;
+							if (prev_minus) {
+								output += " -" + digit.first + " +";
+							}
+							else {
+								output += " -" + digit.first;
+							}
+							
 						}
 						i = i + digit.second;
 					}
@@ -270,7 +278,7 @@ struct Calculator
 							while (op_stack.empty() || op_stack.top() != "(") {
 								//cout << op_stack.top() << endl;
 								//cout << (op_stack.top() == "(") << endl;
-								output += " " + op_stack.top();
+								output += " -1" + op_stack.top() + "*";
 								op_stack.pop();
 							}
 							//cout << op_stack.top() << endl;
@@ -288,6 +296,7 @@ struct Calculator
 					}
 				}
 				else {
+					prev_minus = false;
 					//если число то 
 					digit = get_digit(expression, i);
 					if (output == "") {
@@ -302,6 +311,7 @@ struct Calculator
 				
 			}
 			else {
+				prev_minus = false;
 				text = get_text(expression, i);
 				string x = text.first;
 				i =i + text.second;
