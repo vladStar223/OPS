@@ -297,7 +297,7 @@ struct Calculator
 					}
 				}
 				else {
-					//prev_minus = false;
+					prev_minus = false;
 					//если число то 
 					digit = get_digit(expression, i);
 					if (output == "") {
