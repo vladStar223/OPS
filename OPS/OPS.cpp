@@ -370,10 +370,10 @@ int main()
 		 {
 			 if (stoi(x) == 1) {
 				 cout << "Input" << endl;
-				 //cin >> expression;
-				 //sort_station = cal.sort_station(expression);
+				 cin >> expression;
+				 sort_station = cal.sort_station(expression);
 				 //cout << sort_station << endl;
-				 sort_station = "-1-1";
+				 //sort_station = "-1-1";
 				 cout << sort_station << endl;
 				 cout << expression << " = " << cal.stack_machine(sort_station) << endl;;
 
