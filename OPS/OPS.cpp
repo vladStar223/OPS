@@ -156,7 +156,6 @@ struct Calculator
 		double ot = 0;// значение по умолчанию
 		while (ex_ss >> word) {
 			if (operations.count(word) == 0 && one_operations.count(word) == 0) {
-				
 				stack1.push(p_top, word);
 				//cout << stack.top(p_top) << endl;
 			}
@@ -236,7 +235,6 @@ struct Calculator
 		string xi = "";
 		pair<string, int> digit;
 		pair<string, int> text;
-		bool prev_minus = false;// prev was not minus sign
 		for (int i = 0; i < size;) {
 			xi = expression[i];
 			if (isdigit(expression[i]) || xi=="-") {
@@ -246,13 +244,9 @@ struct Calculator
 						digit = get_digit(expression, i);
 						if (output == "") {
 							output = "-" + digit.first;
-							//prev_minus = true;
 						}
 						else {
-						
-								output += " -" + digit.first;
-							
-							
+							output += " -" + digit.first;
 						}
 						i = i + digit.second;
 					}
@@ -376,11 +370,11 @@ int main()
 		 {
 			 if (stoi(x) == 1) {
 				 cout << "Input" << endl;
-				 cin >> expression;
-				 sort_station = cal.sort_station(expression);
-				 cout << sort_station << endl;
-				 //sort_station = "-1-1";
+				 //cin >> expression;
+				 //sort_station = cal.sort_station(expression);
 				 //cout << sort_station << endl;
+				 sort_station = "-1-1";
+				 cout << sort_station << endl;
 				 cout << expression << " = " << cal.stack_machine(sort_station) << endl;;
 
 			 }
