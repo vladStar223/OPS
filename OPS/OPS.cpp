@@ -5,14 +5,12 @@
 #include<sstream>
 #include<string>
 #include <set>
-//#include <stack>
+#include <stack>
 using namespace std;
 
 struct Node {
 	Node* next;
 	string data;
-
-	Node(const string& value) : next(nullptr), data(value) {}  // Явная инициализация
 };
 
 struct Stack {
