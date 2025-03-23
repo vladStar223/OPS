@@ -20,7 +20,6 @@ private:
 	Node* node = nullptr;
 	int size = 0;
 public:
-	// Создание стека (не требуется, можно использовать конструктор)
 	static Stack* create() {
 		return new Stack();
 	}
@@ -67,7 +66,7 @@ struct Calculator
 	Stack stack1;// обьект струкрутра стека
 	const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
 	const set<string> one_operations = {"sin","cos","tg","sqrt"}; // операции доступные сейчас 
-	int get_priority(string x, int p = 0) {
+	int get_priority(string x, int p = 0) { 
 		if (x == "(" || x == ")") {
 			return 0;
 		}
