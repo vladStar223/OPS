@@ -6,6 +6,7 @@
 #include<string>
 #include <set>
 #include <stack>
+#include<deque>
 using namespace std;
 
 struct Node {
