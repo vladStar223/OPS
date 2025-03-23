@@ -454,6 +454,7 @@ int main()
 }
 /*
 /стабильная версия точно
+//test git
 
 
 test git new
