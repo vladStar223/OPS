@@ -396,6 +396,7 @@ struct Calculator
 	}
 	
 };
+void print(){}
 int main()
 {
 	cout << "Hello user" << endl;
