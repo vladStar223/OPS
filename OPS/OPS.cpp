@@ -80,7 +80,7 @@ struct Calculator
 			return 3;
 		}
 		else if (x == "-" && p == 1) {
-			return 1;
+			return 10;
 		}
 		else if (x == "sin") {
 			return 5;
@@ -155,16 +155,19 @@ struct Calculator
 		stringstream ex_ss(expression);
 		double ot = 0;// значение по умолчанию
 		while (ex_ss >> word) {
+			//cout << word << endl;
 			if (operations.count(word) == 0 && one_operations.count(word) == 0) {
 				stack1.push(p_top, word);
-				//cout << stack.top(p_top) << endl;
 			}
 			else {
 				if (stack1.get_size(p_top) <= 1 || one_operations.count(word) == 1) {
 					//string opernd = word;// записываем унарную операцию
 					//ex_ss >> word;
 					//stack1.push(p_top, word);
-					operationsa_procces(p_top, word, true);
+					
+						operationsa_procces(p_top, word, true);
+	
+					
 				}
 				else {
 					operationsa_procces(p_top, word);
@@ -235,95 +238,18 @@ struct Calculator
 		string xi = "";
 		pair<string, int> digit;
 		pair<string, int> text;
-		bool prev_minus = false;
+		bool prev = false; // есть ли скобка
 		for (int i = 0; i < size;) {
 			xi = expression[i];
-			if (isdigit(expression[i]) || xi == "-") {
-				if (xi == "-") {
-					i = i + 1;
-					if (isdigit(expression[i])) {
-						digit = get_digit(expression, i);
-						if (output == "") {
-							output = "-" + digit.first;
-							
-								prev_minus = true;
-
-							
-						}
-						else {
-							if (prev_minus) {
-								output += " -" + digit.first + " +";
-							}
-							else {
-								output += " -" + digit.first;
-							}
-							
-						}
-						i = i + digit.second;
-					}
-					else {
-						text = get_text(expression, i);
-						string x = text.first;
-						i = i + text.second;
-						if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
-							x = "-1 " + x + " *";
-							op_stack.push(x);
-						}
-						else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
-							while (!op_stack.empty() &&
-								get_priority(x) <= get_priority(op_stack.top())) {
-								output += " -1" + op_stack.top() + "*";
-								op_stack.pop();
-							}
-							op_stack.push(x);
-						}
-						else if (x == ")") {
-							//cout << "ss" << endl;
-							while (op_stack.empty() || op_stack.top() != "(") {
-								//cout << op_stack.top() << endl;
-								//cout << (op_stack.top() == "(") << endl;
-								output += " -1" + op_stack.top() + "*";
-								op_stack.pop();
-							}
-							//cout << op_stack.top() << endl;
-							op_stack.pop();
-							// Удаляем ")"
-							/*
-
-							if (op_stack.empty()) {
-								throw runtime_error("Mismatched parentheses");
-							}
-							*/
-							//op_stack.pop(); // Удаляем "("
-						}
-
-					}
-				}
-				else {
-					prev_minus = false;
-					//если число то 
-					digit = get_digit(expression, i);
-					if (output == "") {
-						output = digit.first;
-					}
-					else {
-						output += " " + digit.first;
-					}
-					i = i + digit.second;
-				}
-				
-				
-			}
-			else {
-				prev_minus = false;
+			if (!isdigit(expression[i]) && xi != "-" &&xi != ".") {
 				text = get_text(expression, i);
 				string x = text.first;
-				i =i + text.second;
+				i = i + text.second;
 				//cout << x << endl;
 				if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
 					op_stack.push(x);
 				}
-				else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x)>0) {
+				else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
 					while (!op_stack.empty() &&
 						get_priority(x) <= get_priority(op_stack.top())) {
 						output += " " + op_stack.top();
@@ -343,13 +269,93 @@ struct Calculator
 					op_stack.pop();
 					// Удаляем ")"
 					/*
-					
+
 					if (op_stack.empty()) {
 						throw runtime_error("Mismatched parentheses");
 					}
 					*/
 					//op_stack.pop(); // Удаляем "("
 				}
+				
+				
+				
+			}
+			else {
+				if (xi == ".") {
+					output += ".";
+					i = i + 1;
+					digit = get_digit(expression, i);
+					output += digit.first;
+					i = i + digit.second;
+				}
+				else {
+					if (xi == "-") {
+						i = i + 1;
+						if (isdigit(expression[i])) {
+							digit = get_digit(expression, i);
+							if (output == "") {
+								output = "-" + digit.first;
+							}
+							else {
+
+								output += " -" + digit.first;
+
+
+							}
+							i = i + digit.second;
+						}
+						else {
+							text = get_text(expression, i);
+							string x = text.first;
+							i = i + text.second;
+							if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
+								prev = true;
+								op_stack.push(x + " -1 *");
+							}
+							else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
+								while (!op_stack.empty() &&
+									get_priority(x) <= get_priority(op_stack.top())) {
+									output += op_stack.top();
+									op_stack.pop();
+								}
+								op_stack.push(x);
+							}
+							else if (x == ")") {
+								//cout << "ss" << endl;
+								while (op_stack.empty() || op_stack.top() != "(") {
+									//cout << op_stack.top() << endl;
+									//cout << (op_stack.top() == "(") << endl;
+									output += op_stack.top();
+									op_stack.pop();
+								}
+								//cout << op_stack.top() << endl;
+								op_stack.pop();
+								prev = false;
+								// Удаляем ")"
+								/*
+
+								if (op_stack.empty()) {
+									throw runtime_error("Mismatched parentheses");
+								}
+								*/
+								//op_stack.pop(); // Удаляем "("
+							}
+
+						}
+					}
+					else {
+						//если число то 
+						digit = get_digit(expression, i);
+						if (output == "") {
+							output = digit.first;
+						}
+						else {
+							output += " " + digit.first;
+						}
+						i = i + digit.second;
+					}
+				}
+				
 			}
 		}
 
