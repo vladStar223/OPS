@@ -123,7 +123,7 @@ string sort_station(string expression) {
 	string output = "";
 	int size = expression.size();
 	string xi = "";
-	 Node* p_top = nullptr;
+	 Node* p_top = new Node;
 	pair<string, int> digit;
 	pair<string, int> text;
 	bool prev = false; // есть ли скобка
