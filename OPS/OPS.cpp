@@ -161,7 +161,7 @@ double stack_machine(string expression) {
 	stringstream ex_ss(expression);
 	double ot = 0;// значение по умолчанию
 	while (ex_ss >> word) {
-		cout << word << endl;
+		//cout << word << endl;
 		if (operations.count(word) == 0 && one_operations.count(word) == 0) {
 			push(p_top, word);
 		}
@@ -202,7 +202,7 @@ int main()
 	 string expression;
 	 string x = "1";
 	 
-		 do
+	do
 		 {
 			 try
 			 {
@@ -240,7 +240,7 @@ int main()
 			 }
 
 		 } while (!k);
-		 cout << "Thank for using" << endl;
+	cout << "Thank for using" << endl;
 	
 	
 	 
