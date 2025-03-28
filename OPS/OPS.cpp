@@ -11,6 +11,8 @@ struct Node
 {
 	Node* next = nullptr;
 	string data = "2";
+	int size = 0;
+
 };
 void push(Node*& p_top, string x) {
 	Node* n = new Node;
@@ -24,7 +26,7 @@ void push(Node*& p_top, string x) {
 		n->next = p_top->next;
 		p_top->next = n;
 	}
-	size_s = size_s + 1;
+	p_top->size = p_top->size + 1;
 
 }
 string top(Node* p_top) {
@@ -46,7 +48,9 @@ void pop(Node*& p_top) {
 bool isEmpty(Node* p_top) {
 	return (p_top->next == nullptr);
 }
-
+ int get_size(Node*  p_top) {
+	 return p_top->size;
+}
 
 
 const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
@@ -71,195 +75,122 @@ int get_priority(string x, int p = 0) {
 		return 5;
 	}
 }
-pair<string, int> get_digit(string x, int i = 0) {
-	string xi;
-	pair<string, int> digit;
-	digit.first = "";
-	digit.second = 0;
-	for (i; i < x.size(); i++) {
-		xi = x[i];
-		if (isdigit(x[i])) {
-			digit.first = digit.first + xi;
-			digit.second = digit.second + 1;
-		}
-		else {
-			break;
-		}
+void operationsa_procces(Node* p_begin, string operation, bool one_opertion = false) {
+	if ((one_opertion == false && (get_size(p_begin) <= 1))) {
+		throw runtime_error("Error");
 	}
-	return digit;
-
-}
-pair<string, int> get_text(string xv, int j = 0) {
-	string xi;
-	pair<string, int> text;
-	//text.first = "fuck";
-	text.first = "";
-	text.second = 0;
-	for (j; j < xv.size(); j++) {
-		xi = xv[j];
-		if (operations.count(xi) == 1) {
-			if (text.first.empty()) {
-				text.first = xi;
-				text.second = 1;
-			}
-			break;
+	else {
+		if ((operation == "+" || operation == "/" || operation == "*" || operation == "^") && one_opertion) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(a));
 		}
-		if (!isdigit(xv[j])) {
-
-			text.first = text.first + xi;
-			text.second = text.second + 1;
-
+		else if (operation == "+") {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			double b = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(b + a));
 		}
-		else {
-			//cout << "dfdf" << endl;
-			//text.second = j;
-			break;
+		else  if (operation == "-" && one_opertion == false) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			double b = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(b - a));
 		}
-	}
-	return text;
-}
-
-string sort_station(string expression) {
-	string output = "";
-	int size = expression.size();
-	string xi = "";
-	 Node* p_top = new Node;
-	pair<string, int> digit;
-	pair<string, int> text;
-	bool prev = false; // есть ли скобка
-	for (int i = 0; i < size;) {
-		xi = expression[i];
-		if (!isdigit(expression[i]) && xi != "-" && xi != ".") {
-			text = get_text(expression, i);
-			string x = text.first;
-			i = i + text.second;
-			//cout << x << endl;
-			if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top))) {
-				push(p_top, x);
-			}
-			else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
-				while (!isEmpty(p_top) &&
-					get_priority(x) <= get_priority(top(p_top))) {
-					output += " " + top(p_top);
-					pop(p_top);
-				}
-				push(p_top,x);
-			}
-			else if (x == ")") {
-				//cout << "ss" << endl;
-				while (isEmpty(p_top) || top(p_top) != "(") {
-					//cout << op_stack.top() << endl;
-					//cout << (op_stack.top() == "(") << endl;
-					if (isEmpty(p_top)) {
-						throw runtime_error("Mismatched parentheses");
-					}
-					output += " " + top(p_top);
-					pop(p_top);
-				}
-				if (isEmpty(p_top)) {
-					throw runtime_error("Mismatched parentheses");
-				}
-				//cout << op_stack.top() << endl;
-				pop(p_top);
-				// Удаляем ")"
-				/*
-
-				if (op_stack.empty()) {
-					throw runtime_error("Mismatched parentheses");
-				}
-				*/
-				//op_stack.pop(); // Удаляем "("
-			}
-
-
-
+		else  if (operation == "*") {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			double b = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(b * a));
 		}
-		else {
-			if (xi == ".") {
-				output += ".";
-				i = i + 1;
-				digit = get_digit(expression, i);
-				output += digit.first;
-				i = i + digit.second;
+		else  if (operation == "/") {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			double b = stof(top(p_begin));
+			pop(p_begin);
+			if (a == 0) {
+				throw runtime_error("delenie na 0");
 			}
 			else {
-				if (xi == "-") {
-					i = i + 1;
-					if (isdigit(expression[i])) {
-						digit = get_digit(expression, i);
-						if (output == "") {
-							output = "-" + digit.first;
-						}
-						else {
-
-							output += " -" + digit.first;
-
-
-						}
-						i = i + digit.second;
-					}
-					else {
-						text = get_text(expression, i);
-						string x = text.first;
-						i = i + text.second;
-						if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top))) {
-							prev = true;
-							push(p_top,x + " -1 *");
-						}
-						else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
-							while (!isEmpty(p_top) &&
-								get_priority(x) <= get_priority(top(p_top))) {
-								output += top(p_top);
-								pop(p_top);
-							}
-							push(p_top,x);
-						}
-						else if (x == ")") {
-							//cout << "ss" << endl;
-							while (isEmpty(p_top) || top(p_top) != "(") {
-								//cout << op_stack.top() << endl;
-								//cout << (op_stack.top() == "(") << endl;
-								output += top(p_top);
-								pop(p_top);
-							}
-							//cout << op_stack.top() << endl;
-							if (isEmpty(p_top)) {
-								throw runtime_error("Mismatched parentheses");
-							}
-							pop(p_top);
-							prev = false;
-							// Удаляем ")"
-							/*
-
-
-							*/
-							//op_stack.pop(); // Удаляем "("
-						}
-
-					}
-				}
-				else {
-					//если число то 
-					digit = get_digit(expression, i);
-					if (output == "") {
-						output = digit.first;
-					}
-					else {
-						output += " " + digit.first;
-					}
-					i = i + digit.second;
-				}
+				push(p_begin, to_string(b / a));
 			}
 
 		}
+		else  if (operation == "^") {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			double b = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(pow(b, a)));
+		}
+		else  if (operation == "-" && one_opertion) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(a * -1));
+		}
+		else  if (operation == "sin" && one_opertion) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(sin(a)));
+		}
+		else  if (operation == "cos" && one_opertion) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(cos(a)));
+		}
+		else  if (operation == "tg" && one_opertion) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(tan(a)));
+		}
+		else  if (operation == "sqrt" && one_opertion) {
+			double a = stof(top(p_begin));
+			pop(p_begin);
+			push(p_begin, to_string(sqrt(a)));
+		}
 	}
 
-	while (!isEmpty(p_top)) {
-		output += " " + top(p_top);
-		pop(p_top);
-	}
 
-	return output;
+}
+double stack_machine(string expression) {
+	string word;
+	Node* p_top=new Node;
+	stringstream ex_ss(expression);
+	double ot = 0;// значение по умолчанию
+	while (ex_ss >> word) {
+		cout << word << endl;
+		if (operations.count(word) == 0 && one_operations.count(word) == 0) {
+			push(p_top, word);
+		}
+		else {
+			if (get_size(p_top) <= 1 || one_operations.count(word) == 1) {
+				if (get_size(p_top) == 0) {
+					throw runtime_error("Error");
+				}
+				//string opernd = word;// записываем унарную операцию
+				//ex_ss >> word;
+				//stack1.push(p_top, word);
+
+				operationsa_procces(p_top, word, true);
+
+
+			}
+			else {
+				operationsa_procces(p_top, word);
+			}
+
+
+		}
+
+	}
+	ot = stof(top(p_top));
+	//для большей точности используй 
+	//long double num_ld = std::stold("123.456");
+	pop(p_top);
+	return ot;
 }
 int main()
 {
@@ -283,7 +214,7 @@ int main()
 			 if (stoi(x) == 1) {
 				 cout << "Input" << endl;
 				 cin >> expression;
-				 cout << sort_station(expression) << endl;;
+				 cout << stack_machine(expression) << endl;;
 				 //cout << sort_station << endl;
 				 //sort_station = "-1-1";
 				 //cout << sort_station << endl;
