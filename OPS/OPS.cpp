@@ -262,33 +262,33 @@ string sort_station(string expression) {
 			string x = text.first;
 			i = i + text.second;
 			//cout << x << endl;
-			if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
-				op_stack.push(x);
+			if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top))) {
+				stack1.push(p_top,x);
 			}
-			else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
-				while (!op_stack.empty() &&
-					get_priority(x) <= get_priority(op_stack.top())) {
-					output += " " + op_stack.top();
-					op_stack.pop();
+			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
+				while (!stack1.isEmpty(p_top) &&
+					get_priority(x) <= get_priority(stack1.top(p_top))) {
+					output += " " + stack1.top(p_top);
+					stack1.pop(p_top);
 				}
-				op_stack.push(x);
+				stack1.push(p_top,x);
 			}
 			else if (x == ")") {
 				//cout << "ss" << endl;
-				while (op_stack.empty() || op_stack.top() != "(") {
-					//cout << op_stack.top() << endl;
-					//cout << (op_stack.top() == "(") << endl;
-					if (op_stack.empty()) {
+				while (stack1.isEmpty(p_top) || stack1.top(p_top) != "(") {
+					//cout << stack1.top() << endl;
+					//cout << (stack1.top() == "(") << endl;
+					if (stack1.isEmpty(p_top)) {
 						throw runtime_error("Mismatched parentheses");
 					}
-					output += " " + op_stack.top();
-					op_stack.pop();
+					output += " " + stack1.top(p_top);
+					stack1.pop(p_top);
 				}
-				if (op_stack.empty()) {
+				if (stack1.isEmpty(p_top)) {
 					throw runtime_error("Mismatched parentheses");
 				}
 				//cout << op_stack.top() << endl;
-				op_stack.pop();
+				stack1.pop(p_top);
 				// Удаляем ")"
 				/*
 
@@ -330,38 +330,38 @@ string sort_station(string expression) {
 						text = get_text(expression, i);
 						string x = text.first;
 						i = i + text.second;
-						if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
+						if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top))) {
 							prev = true;
-							op_stack.push(x + " -1 *");
+							stack1.push(p_top,x + " -1 *");
 						}
-						else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
-							while (!op_stack.empty() &&
-								get_priority(x) <= get_priority(op_stack.top())) {
-								output += op_stack.top();
-								op_stack.pop();
+						else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
+							while (!stack1.isEmpty(p_top) &&
+								get_priority(x) <= get_priority(stack1.top(p_top))) {
+								output += stack1.top(p_top);
+								stack1.pop(p_top);
 							}
-							op_stack.push(x);
+							stack1.push(p_top,x);
 						}
 						else if (x == ")") {
 							//cout << "ss" << endl;
-							while (op_stack.empty() || op_stack.top() != "(") {
-								//cout << op_stack.top() << endl;
-								//cout << (op_stack.top() == "(") << endl;
-								output += op_stack.top();
-								op_stack.pop();
+							while (stack1.isEmpty(p_top) || stack1.top(p_top) != "(") {
+								//cout << stack1.top() << endl;
+								//cout << (stack1.top() == "(") << endl;
+								output += stack1.top(p_top);
+								stack1.pop(p_top);
 							}
-							//cout << op_stack.top() << endl;
-							if (op_stack.empty()) {
+							//cout << stack1.top() << endl;
+							if (stack1.isEmpty(p_top)) {
 								throw runtime_error("Mismatched parentheses");
 							}
-							op_stack.pop();
+							stack1.pop(p_top);
 							prev = false;
 							// Удаляем ")"
 							/*
 
 
 							*/
-							//op_stack.pop(); // Удаляем "("
+							//stack1.pop(); // Удаляем "("
 						}
 
 					}
@@ -382,9 +382,9 @@ string sort_station(string expression) {
 		}
 	}
 
-	while (!op_stack.empty()) {
-		output += " " + op_stack.top();
-		op_stack.pop();
+	while (!stack1.isEmpty(p_top)) {
+		output += " " + stack1.top(p_top);
+		stack1.pop(p_top);
 	}
 
 	return output;
@@ -399,7 +399,7 @@ int main()
 	bool k = false;
 	//cout << "sdsd" << endl;
 	string expression;
-	string sort_station;
+	string sort_station1;
 	string x = "1";
 
 	do
@@ -415,11 +415,11 @@ int main()
 				cout << "Input" << endl;
 				getline(cin, expression);
 				//expression = "1 1 +";
-				//sort_station = cal.sort_station(expression);
+				sort_station1 = sort_station(expression);
 				//cout << sort_station << endl;
-				//sort_station = "-1-1";
+				//sort_station = "-1-1";`
 				//cout << sort_station << endl;
-				cout << expression << " = " << stack_machine(expression) << endl;;
+				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
 			}
 			else if (stoi(x) == 2) {
