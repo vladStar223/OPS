@@ -251,54 +251,58 @@ pair<string, int> get_text(string xv, int j = 0) {
 }
 string sort_station(string expression) {
 	string output = "";
-	Stack* p_top = stack1.create();
 	int size = expression.size();
 	string xi = "";
+	Node* p_top = new Node;
 	pair<string, int> digit;
 	pair<string, int> text;
-	bool prev = false; // есть ли скобка
+	bool prev_oper = false;; // есть ли 
+	bool prev_sk = false;
 	for (int i = 0; i < size;) {
 		xi = expression[i];
 		if (!isdigit(expression[i]) && xi != "-" && xi != ".") {
 			text = get_text(expression, i);
 			string x = text.first;
-			i = i + text.second;
-			//cout << x << endl;
-			if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top))) {
-				stack1.push(p_top,x);
+			if (prev_oper && x != "(" && x != ")") {
+				throw runtime_error("more than one operator");
 			}
-			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
-				while (!stack1.isEmpty(p_top) &&
-					get_priority(x) <= get_priority(stack1.top(p_top))) {
-					output += " " + stack1.top(p_top);
-					stack1.pop(p_top);
+			i = i + text.second;
+
+			//cout << x << endl;
+			if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top)) && x != ")") {
+				if (x == "(") {
+					prev_sk = true;
 				}
-				stack1.push(p_top,x);
+				push(p_top, x);
+			}
+			else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
+				while (!isEmpty(p_top) &&
+					get_priority(x) <= get_priority(top(p_top))) {
+					output += " " + top(p_top);
+					pop(p_top);
+				}
+				push(p_top, x);
 			}
 			else if (x == ")") {
+				if (prev_sk == false) {
+					throw runtime_error("Mismatched parenthese");
+				}
 				//cout << "ss" << endl;
-				while (stack1.isEmpty(p_top) || stack1.top(p_top) != "(") {
-					//cout << stack1.top() << endl;
-					//cout << (stack1.top() == "(") << endl;
-					if (stack1.isEmpty(p_top)) {
+				while (isEmpty(p_top) || top(p_top) != "(") {
+					//cout << op_stack.top() << endl;
+					//cout << (op_stack.top() == "(") << endl;
+					if (isEmpty(p_top)) {
 						throw runtime_error("Mismatched parentheses");
 					}
-					output += " " + stack1.top(p_top);
-					stack1.pop(p_top);
+					output += " " + top(p_top);
+					pop(p_top);
 				}
-				if (stack1.isEmpty(p_top)) {
+				if (isEmpty(p_top)) {
 					throw runtime_error("Mismatched parentheses");
 				}
-				//cout << op_stack.top() << endl;
-				stack1.pop(p_top);
+				//cout << top(p_top) << endl;
+				pop(p_top);
 				// Удаляем ")"
-				/*
-
-				if (op_stack.empty()) {
-					throw runtime_error("Mismatched parentheses");
-				}
-				*/
-				//op_stack.pop(); // Удаляем "("
 			}
 
 
@@ -315,8 +319,10 @@ string sort_station(string expression) {
 			else {
 				if (xi == "-") {
 					i = i + 1;
+					prev_oper = true;
 					if (isdigit(expression[i])) {
 						digit = get_digit(expression, i);
+						prev_oper = false;
 						if (output == "") {
 							output = "-" + digit.first;
 						}
@@ -332,44 +338,72 @@ string sort_station(string expression) {
 						text = get_text(expression, i);
 						string x = text.first;
 						i = i + text.second;
-						if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top))) {
-							prev = true;
-							stack1.push(p_top,x + " -1 *");
+						if (prev_oper && x != "(" && x != ")") {
+							throw runtime_error("more than one operator");
 						}
-						else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
-							while (!stack1.isEmpty(p_top) &&
-								get_priority(x) <= get_priority(stack1.top(p_top))) {
-								output += stack1.top(p_top);
-								stack1.pop(p_top);
+						prev_oper = true;
+						if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top))) {
+							if (x == "(") {
+								prev_sk = true;
 							}
-							stack1.push(p_top,x);
+							prev_oper = true;
+							if (x != "(") {
+								push(p_top, x + " -1 *");
+							}
+							else {
+								if (x == "(") {
+									push(p_top, x);
+									push(p_top, xi);
+
+
+								}
+
+							}
+
+						}
+						else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
+							while (!isEmpty(p_top) &&
+								get_priority(x) <= get_priority(top(p_top))) {
+								output += " " + top(p_top);
+								pop(p_top);
+							}
+							push(p_top, x);
+						}
+
+						else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
+							while (!isEmpty(p_top) &&
+								get_priority(x) <= get_priority(top(p_top))) {
+								output += " " + top(p_top);
+								pop(p_top);
+							}
+							push(p_top, x);
 						}
 						else if (x == ")") {
-							//cout << "ss" << endl;
-							while (stack1.isEmpty(p_top) || stack1.top(p_top) != "(") {
-								//cout << stack1.top() << endl;
-								//cout << (stack1.top() == "(") << endl;
-								output += stack1.top(p_top);
-								stack1.pop(p_top);
+							if (!prev_sk) {
+								throw runtime_error("Mismatched parenthese");
 							}
-							//cout << stack1.top() << endl;
-							if (stack1.isEmpty(p_top)) {
+							//cout << "ss" << endl;
+							while (isEmpty(p_top) || top(p_top) != "(") {
+								//cout << op_stack.top() << endl;
+								//cout << (op_stack.top() == "(") << endl;
+								if (isEmpty(p_top)) {
+									throw runtime_error("Mismatched parentheses");
+								}
+								output += " " + top(p_top);
+								pop(p_top);
+							}
+							if (isEmpty(p_top)) {
 								throw runtime_error("Mismatched parentheses");
 							}
-							stack1.pop(p_top);
-							prev = false;
+							//cout << top(p_top) << endl;
+							pop(p_top);
 							// Удаляем ")"
-							/*
-
-
-							*/
-							//stack1.pop(); // Удаляем "("
 						}
-
 					}
 				}
 				else {
 					//если число то 
+					prev_oper = false;
 					digit = get_digit(expression, i);
 					if (output == "") {
 						output = digit.first;
@@ -384,9 +418,15 @@ string sort_station(string expression) {
 		}
 	}
 
-	while (!stack1.isEmpty(p_top)) {
-		output += " " + stack1.top(p_top);
-		stack1.pop(p_top);
+	while (!isEmpty(p_top)) {
+
+
+		if (top(p_top) == "(" || top(p_top) == ")") {
+			throw runtime_error("Mismatched parentheses");
+		}
+
+		output += " " + top(p_top);
+		pop(p_top);
 	}
 
 	return output;
