@@ -6,60 +6,52 @@
 #include<string>
 #include <set>
 using namespace std;
+int size_s = 0;
+struct Node
+{
+	Node* next = nullptr;
+	string data = "2";
+};
+void push(Node*& p_top, string x) {
+	Node* n = new Node;
+	n->data = x;
+	n->next = nullptr;
+	if (p_top == nullptr) {
+		p_top = new Node;
+		p_top->next = n;
+	}
+	else {
+		n->next = p_top->next;
+		p_top->next = n;
+	}
+	size_s = size_s + 1;
+
+}
+string top(Node* p_top) {
+	if (p_top == nullptr) {
+		throw "Error";
+	}
+	return p_top->next->data;
+}
+void pop(Node*& p_top) {
+	if (p_top == nullptr) {
+		throw "Error";
+	}
+	else {
+		Node* t = p_top->next;
+		p_top->next = p_top->next->next;
+		delete t;
+	}
+}
+bool isEmpty(Node* p_top) {
+	return (p_top->next == nullptr);
+}
 
 struct Node {
 	Node* next = nullptr;
 	string data;
 };
 
-struct Stack {
-private:
-	
-	Node* node = nullptr;
-	int size = 0;
-public:
-	// Создание стека (не требуется, можно использовать конструктор)
-	static Stack* create() {
-		return new Stack();
-	}
-	void push(Stack*& p_top, string x) {
-		Node* n = new Node;
-		n->data = x;
-		n->next = nullptr;
-		if (p_top == nullptr) {
-			p_top = new Stack; 
-			p_top->node = n;
-		}
-		else {
-			n->next = p_top->node;
-			p_top->node = n;
-		}
-		p_top->size = p_top->size + 1;
-	}
-	string top(Stack* p_top) {
-		if (p_top == nullptr) {
-			throw "Error";
-		}
-		return p_top->node->data;
-	}
-	void pop(Stack*& p_top) {
-		if (p_top == nullptr) {
-			throw "Error";
-		}
-		else {
-			Node* t = p_top->node;
-			p_top->node = p_top->node->next;
-			delete t;
-		}
-	}
-	
-	bool isEmpty(Stack*& p_top) {
-		return (p_top->node == nullptr);
-	}
-	int get_size(Stack*& p_top) {
-		return p_top->size;
-	}
-};
 const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
 const set<string> one_operations = { "sin","cos","tg","sqrt" }; // операции доступные сейчас 
 pair<string, int> get_digit(string x, int i = 0) {
@@ -112,9 +104,9 @@ pair<string, int> get_text(string xv, int j = 0) {
 
 string sort_station(string expression) {
 	string output = "";
-	stack<string> op_stack;
 	int size = expression.size();
 	string xi = "";
+	 Node* p_top = nullptr;
 	pair<string, int> digit;
 	pair<string, int> text;
 	bool prev = false; // есть ли скобка
@@ -125,33 +117,33 @@ string sort_station(string expression) {
 			string x = text.first;
 			i = i + text.second;
 			//cout << x << endl;
-			if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
-				op_stack.push(x);
+			if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top))) {
+				push(p_top, x);
 			}
-			else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
-				while (!op_stack.empty() &&
-					get_priority(x) <= get_priority(op_stack.top())) {
-					output += " " + op_stack.top();
-					op_stack.pop();
+			else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
+				while (!isEmpty(p_top) &&
+					get_priority(x) <= get_priority(top(p_top))) {
+					output += " " + top(p_top);
+					pop(p_top);
 				}
-				op_stack.push(x);
+				push(p_top,x);
 			}
 			else if (x == ")") {
 				//cout << "ss" << endl;
-				while (op_stack.empty() || op_stack.top() != "(") {
+				while (isEmpty(p_top)) || top(p_top) != "(") {
 					//cout << op_stack.top() << endl;
 					//cout << (op_stack.top() == "(") << endl;
-					if (op_stack.empty()) {
+					if (isEmpty(p_top)) {
 						throw runtime_error("Mismatched parentheses");
 					}
 					output += " " + op_stack.top();
 					op_stack.pop();
 				}
-				if (op_stack.empty()) {
+				if (isEmpty(p_top)) {
 					throw runtime_error("Mismatched parentheses");
 				}
 				//cout << op_stack.top() << endl;
-				op_stack.pop();
+				pop(p_top);
 				// Удаляем ")"
 				/*
 
@@ -259,9 +251,7 @@ int main()
 	string da;
 	 bool k = false;
 	 //cout << "sdsd" << endl;
-	 Calculator cal;
 	 string expression;
-	 string sort_station;
 	 string x = "1";
 	 
 		 do
