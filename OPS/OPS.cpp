@@ -5,13 +5,46 @@
 #include<sstream>
 #include<string>
 #include <set>
-#include<deque>
+#include<cmath>
 using namespace std;
-
 struct Node {
 	Node* next = nullptr;
 	string data;
 };
+void push(Node*& p_top, string x) {
+	Node* n = new Node;
+	n->data = x;
+	n->next = nullptr;
+	if (p_top == nullptr) {
+		p_top = new Node;
+		p_top->next = n;
+	}
+	else {
+		n->next = p_top->next;
+		p_top->next = n;
+	}
+
+}
+string top(Node* p_top) {
+	if (p_top == nullptr) {
+		throw "Error";
+	}
+	return p_top->next->data;
+}
+void pop(Node*& p_top) {
+	if (p_top == nullptr) {
+		throw "Error";
+	}
+	else {
+		Node* t = p_top->next;
+		p_top->next = p_top->next->next;
+		delete t;
+	}
+}
+bool isEmpty(Node* p_top) {
+	return (p_top->next == nullptr);
+}
+
 
 struct Stack {
 private:
@@ -328,7 +361,8 @@ string sort_station(string expression) {
 						}
 						else {
 
-							output += " -" + digit.first;
+
+							output += " -" + digit.first+" +";
 
 
 						}
@@ -458,7 +492,7 @@ int main()
 				getline(cin, expression);
 				//expression = "1 1 +";
 				sort_station1 = sort_station(expression);
-				//cout << sort_station << endl;
+				cout << sort_station1 << endl;
 				//sort_station = "-1-1";`
 				//cout << sort_station << endl;
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
