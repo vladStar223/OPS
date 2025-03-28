@@ -44,8 +44,6 @@ void pop(Node*& p_top) {
 bool isEmpty(Node* p_top) {
 	return (p_top->next == nullptr);
 }
-
-
 struct Stack {
 private:
 
