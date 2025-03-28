@@ -166,7 +166,7 @@ double stack_machine(string expression) {
 			push(p_top, word);
 		}
 		else {
-			if (get_size(p_top) <= 1 || one_operations.count(word) == 1) {
+			if (get_size(p_top) <= 0 || one_operations.count(word) == 1) {
 				if (get_size(p_top) == 0) {
 					throw runtime_error("Error");
 				}
