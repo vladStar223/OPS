@@ -247,7 +247,148 @@ pair<string, int> get_text(string xv, int j = 0) {
 	}
 	return text;
 }
+string sort_station(string expression) {
+	string output = "";
+	Stack* p_top = stack1.create();
+	int size = expression.size();
+	string xi = "";
+	pair<string, int> digit;
+	pair<string, int> text;
+	bool prev = false; // есть ли скобка
+	for (int i = 0; i < size;) {
+		xi = expression[i];
+		if (!isdigit(expression[i]) && xi != "-" && xi != ".") {
+			text = get_text(expression, i);
+			string x = text.first;
+			i = i + text.second;
+			//cout << x << endl;
+			if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
+				op_stack.push(x);
+			}
+			else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
+				while (!op_stack.empty() &&
+					get_priority(x) <= get_priority(op_stack.top())) {
+					output += " " + op_stack.top();
+					op_stack.pop();
+				}
+				op_stack.push(x);
+			}
+			else if (x == ")") {
+				//cout << "ss" << endl;
+				while (op_stack.empty() || op_stack.top() != "(") {
+					//cout << op_stack.top() << endl;
+					//cout << (op_stack.top() == "(") << endl;
+					if (op_stack.empty()) {
+						throw runtime_error("Mismatched parentheses");
+					}
+					output += " " + op_stack.top();
+					op_stack.pop();
+				}
+				if (op_stack.empty()) {
+					throw runtime_error("Mismatched parentheses");
+				}
+				//cout << op_stack.top() << endl;
+				op_stack.pop();
+				// Удаляем ")"
+				/*
 
+				if (op_stack.empty()) {
+					throw runtime_error("Mismatched parentheses");
+				}
+				*/
+				//op_stack.pop(); // Удаляем "("
+			}
+
+
+
+		}
+		else {
+			if (xi == ".") {
+				output += ".";
+				i = i + 1;
+				digit = get_digit(expression, i);
+				output += digit.first;
+				i = i + digit.second;
+			}
+			else {
+				if (xi == "-") {
+					i = i + 1;
+					if (isdigit(expression[i])) {
+						digit = get_digit(expression, i);
+						if (output == "") {
+							output = "-" + digit.first;
+						}
+						else {
+
+							output += " -" + digit.first;
+
+
+						}
+						i = i + digit.second;
+					}
+					else {
+						text = get_text(expression, i);
+						string x = text.first;
+						i = i + text.second;
+						if (x == "(" || op_stack.empty() || get_priority(x) > get_priority(op_stack.top())) {
+							prev = true;
+							op_stack.push(x + " -1 *");
+						}
+						else if (get_priority(x) <= get_priority(op_stack.top()) && get_priority(x) > 0) {
+							while (!op_stack.empty() &&
+								get_priority(x) <= get_priority(op_stack.top())) {
+								output += op_stack.top();
+								op_stack.pop();
+							}
+							op_stack.push(x);
+						}
+						else if (x == ")") {
+							//cout << "ss" << endl;
+							while (op_stack.empty() || op_stack.top() != "(") {
+								//cout << op_stack.top() << endl;
+								//cout << (op_stack.top() == "(") << endl;
+								output += op_stack.top();
+								op_stack.pop();
+							}
+							//cout << op_stack.top() << endl;
+							if (op_stack.empty()) {
+								throw runtime_error("Mismatched parentheses");
+							}
+							op_stack.pop();
+							prev = false;
+							// Удаляем ")"
+							/*
+
+
+							*/
+							//op_stack.pop(); // Удаляем "("
+						}
+
+					}
+				}
+				else {
+					//если число то 
+					digit = get_digit(expression, i);
+					if (output == "") {
+						output = digit.first;
+					}
+					else {
+						output += " " + digit.first;
+					}
+					i = i + digit.second;
+				}
+			}
+
+		}
+	}
+
+	while (!op_stack.empty()) {
+		output += " " + op_stack.top();
+		op_stack.pop();
+	}
+
+	return output;
+}
 
 void print() {}
 int main()
