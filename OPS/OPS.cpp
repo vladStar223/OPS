@@ -5,7 +5,6 @@
 #include<sstream>
 #include<string>
 #include <set>
-#include <stack>
 using namespace std;
 
 struct Node {
@@ -61,6 +60,8 @@ public:
 		return p_top->size;
 	}
 };
+const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
+const set<string> one_operations = { "sin","cos","tg","sqrt" }; // операции доступные сейчас 
 pair<string, int> get_digit(string x, int i = 0) {
 	string xi;
 	pair<string, int> digit;
@@ -251,11 +252,6 @@ string sort_station(string expression) {
 
 	return output;
 }
-struct Calculator
-{
-	
-	
-};
 int main()
 {
 	cout << "Hello user" << endl;
