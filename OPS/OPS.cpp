@@ -200,6 +200,55 @@ double stack_machine(string expression) {
 	stack1.pop(p_top);
 	return ot;
 }
+pair<string, int> get_digit(string x, int i = 0) {
+	string xi;
+	pair<string, int> digit;
+	digit.first = "";
+	digit.second = 0;
+	for (i; i < x.size(); i++) {
+		xi = x[i];
+		if (isdigit(x[i])) {
+			digit.first = digit.first + xi;
+			digit.second = digit.second + 1;
+		}
+		else {
+			break;
+		}
+	}
+	return digit;
+
+}
+pair<string, int> get_text(string xv, int j = 0) {
+	string xi;
+	pair<string, int> text;
+	//text.first = "fuck";
+	text.first = "";
+	text.second = 0;
+	for (j; j < xv.size(); j++) {
+		xi = xv[j];
+		if (operations.count(xi) == 1) {
+			if (text.first.empty()) {
+				text.first = xi;
+				text.second = 1;
+			}
+			break;
+		}
+		if (!isdigit(xv[j])) {
+
+			text.first = text.first + xi;
+			text.second = text.second + 1;
+
+		}
+		else {
+			//cout << "dfdf" << endl;
+			//text.second = j;
+			break;
+		}
+	}
+	return text;
+}
+
+
 void print() {}
 int main()
 {
