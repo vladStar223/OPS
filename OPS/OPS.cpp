@@ -168,10 +168,12 @@ double stack_machine(string expression) {
 	Stack* p_top = stack1.create();
 	stringstream ex_ss(expression);
 	double ot = 0;// значение по умолчанию
+	bool prev = false;
 	while (ex_ss >> word) {
 		//cout << word << endl;
 		if (operations.count(word) == 0 && one_operations.count(word) == 0) {
 			stack1.push(p_top, word);
+			
 		}
 		else {
 			if (stack1.get_size(p_top) <= 1 || one_operations.count(word) == 1) {
