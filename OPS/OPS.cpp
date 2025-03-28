@@ -23,10 +23,12 @@ void push(Node*& p_top, string x) {
 		p_top->next = n;
 	}
 	else {
+		int s = p_top->size;
 		n->next = p_top->next;
+		n->size = p_top->size + 1;
 		p_top->next = n;
 	}
-	p_top->size = p_top->size + 1;
+	
 
 }
 string top(Node* p_top) {
@@ -49,6 +51,9 @@ bool isEmpty(Node* p_top) {
 	return (p_top->next == nullptr);
 }
  int get_size(Node*  p_top) {
+	 if (p_top == nullptr) {
+		 return 0;
+	 }
 	 return p_top->size;
 }
 
@@ -157,7 +162,7 @@ void operationsa_procces(Node* p_begin, string operation, bool one_opertion = fa
 }
 double stack_machine(string expression) {
 	string word;
-	Node* p_top=new Node;
+	Node* p_top= nullptr;
 	stringstream ex_ss(expression);
 	double ot = 0;// значение по умолчанию
 	while (ex_ss >> word) {
@@ -166,7 +171,7 @@ double stack_machine(string expression) {
 			push(p_top, word);
 		}
 		else {
-			if (get_size(p_top) <= 0 || one_operations.count(word) == 1) {
+			if (get_size(p_top) <= 1 || one_operations.count(word) == 1) {
 				if (get_size(p_top) == 0) {
 					throw runtime_error("Error");
 				}
@@ -227,7 +232,6 @@ int main()
 			 }
 			 else {
 				 cout << "You are Strange" << endl;
-				 break;
 			 }
 			 }
 			 catch (runtime_error exception)
