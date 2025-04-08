@@ -8,39 +8,6 @@ struct Node {
 	Node* next = nullptr;
 	string data;
 };
-void push(Node*& p_top, string x) {
-	Node* n = new Node;
-	n->data = x;
-	n->next = nullptr;
-	if (p_top == nullptr) {
-		p_top = new Node;
-		p_top->next = n;
-	}
-	else {
-		n->next = p_top->next;
-		p_top->next = n;
-	}
-
-}
-string top(Node* p_top) {
-	if (p_top == nullptr) {
-		throw "Error";
-	}
-	return p_top->next->data;
-}
-void pop(Node*& p_top) {
-	if (p_top == nullptr) {
-		throw "Error";
-	}
-	else {
-		Node* t = p_top->next;
-		p_top->next = p_top->next->next;
-		delete t;
-	}
-}
-bool isEmpty(Node* p_top) {
-	return (p_top->next == nullptr);
-}
 
 
 struct Stack {
@@ -279,9 +246,9 @@ pair<string, int> get_text(string xv, int j = 0) {
 }
 string sort_station(string expression) {
 	string output = "";
+	Stack* p_top = stack1.create();
 	int size = expression.size();
 	string xi = "";
-	Node* p_top = new Node;
 	pair<string, int> digit;
 	pair<string, int> text;
 	bool prev_oper = false;; // есть ли 
@@ -296,35 +263,35 @@ string sort_station(string expression) {
 			}
 			i = i + text.second;
 
-			if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top)) && x != ")") {
+			if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top)) && x != ")") {
 				if (x == "(") {
 					prev_sk = true;
 				}
-				push(p_top, x);
+				stack1.push(p_top, x);
 			}
-			else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
-				while (!isEmpty(p_top) &&
-					get_priority(x) <= get_priority(top(p_top))) {
-					output += " " + top(p_top);
-					pop(p_top);
+			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
+				while (!stack1.isEmpty(p_top) &&
+					get_priority(x) <= get_priority(stack1.top(p_top))) {
+					output += " " + stack1.top(p_top);
+					stack1.pop(p_top);
 				}
-				push(p_top, x);
+				stack1.push(p_top, x);
 			}
 			else if (x == ")") {
 				if (prev_sk == false) {
 					throw runtime_error("Mismatched parenthese");
 				}
-				while (isEmpty(p_top) || top(p_top) != "(") {
-					if (isEmpty(p_top)) {
+				while (stack1.isEmpty(p_top) || stack1.top(p_top) != "(") {
+					if (stack1.isEmpty(p_top)) {
 						throw runtime_error("Mismatched parentheses");
 					}
-					output += " " + top(p_top);
-					pop(p_top);
+					output += " " + stack1.top(p_top);
+					stack1.pop(p_top);
 				}
-				if (isEmpty(p_top)) {
+				if (stack1.isEmpty(p_top)) {
 					throw runtime_error("Mismatched parentheses");
 				}
-				pop(p_top);
+				stack1.pop(p_top);
 				// Удаляем ")"
 			}
 
@@ -357,15 +324,15 @@ string sort_station(string expression) {
 		}
 	}
 
-	while (!isEmpty(p_top)) {
+	while (!stack1.isEmpty(p_top)) {
 
 
-		if (top(p_top) == "(" || top(p_top) == ")") {
+		if (stack1.top(p_top) == "(" || stack1.top(p_top) == ")") {
 			throw runtime_error("Mismatched parentheses");
 		}
 
-		output += " " + top(p_top);
-		pop(p_top);
+		output += " " + stack1.top(p_top);
+		stack1.pop(p_top);
 	}
 
 	return output;
