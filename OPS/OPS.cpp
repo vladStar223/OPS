@@ -373,16 +373,18 @@ string sort_station(string expression) {
 
 string toNormalExpression(string expression) {
 	string normal_expression;
-
-	for (int i = 0; i < expression.size(); i++) {
-		if (expression[i] == '(' && i + 1 < expression.size() && expression[i + 1] == '-') {
+	int size = expression.size();
+	for (int i = 0; i < size; i++) {
+		if (expression[i] == '(' && i + 1 < size && expression[i + 1] == '-') {
 			normal_expression += "(~";
 			i=i+1; 
+		}
+		else if (expression[i] == '-' && i + 1 < size &&  isalpha(expression[i + 1])) {
+			normal_expression += "~1*";
 		}
 		else if (expression[i] == '-' && (i == 0 || expression[i - 1] == '(')) {
 			normal_expression += '~';
 		}
-	
 		else {
 			normal_expression += expression[i];
 		}
@@ -396,11 +398,10 @@ int main()
 	string data;
 	string da;
 	bool k = false;
-	//cout << "sdsd" << endl;
 	string expression;
+	string expression_n;
 	string sort_station1;
 	string x = "1";
-
 	do
 	{
 		try
@@ -413,10 +414,8 @@ int main()
 			if (stoi(x) == 1) {
 				cout << "Input" << endl;
 				getline(cin, expression);
-				expression = toNormalExpression(expression);
-				sort_station1 = sort_station(expression);
-				//sort_station1 = "100 ~";
-				//cout << sort_station << endl;
+				expression_n = toNormalExpression(expression);
+				sort_station1 = sort_station(expression_n);
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
 			}
