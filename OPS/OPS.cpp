@@ -92,7 +92,7 @@ public:
 };
 Stack stack1;// струкрутра стека
 const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
-const set<string> one_operations = { "sin","cos","tg","sqrt" }; // операции доступные сейчас 
+const set<string> one_operations = { "sin","cos","tg","sqrt","~"}; // операции доступные сейчас 
 int get_priority(string x, int p = 0) {
 	if (x == "(" || x == ")") {
 		return 0;
@@ -106,7 +106,7 @@ int get_priority(string x, int p = 0) {
 	else if (x == "^") {
 		return 3;
 	}
-	else if (x == "-" && p == 1) {
+	else if (x == "~" && p == 1) {
 		return 10;
 	}
 	else if (x == "sin" || x == "cos" || x == "tg" || x == "sqrt") {
@@ -164,7 +164,7 @@ void operationsa_procces(Stack* p_begin, string operation, bool one_opertion = f
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(pow(b, a)));
 		}
-		else  if (operation == "-" && one_opertion) {
+		else  if (operation == "~" && one_opertion) {
 			double a = stof(stack1.top(p_begin));
 			stack1.pop(p_begin);
 			stack1.push(p_begin, to_string(a * -1));
@@ -200,7 +200,7 @@ double stack_machine(string expression) {
 	double ot = 0;// значение по умолчанию
 	bool prev = false;
 	while (ex_ss >> word) {
-		//cout << word << endl;
+		cout << word << endl;
 		if (operations.count(word) == 0 && one_operations.count(word) == 0) {
 			stack1.push(p_top, word);
 
@@ -463,7 +463,9 @@ string sort_station(string expression) {
 	return output;
 }
 
-void print() {}
+void toNormalExpression(string expression) {
+
+}
 int main()
 {
 	cout << "Hello user" << endl;
@@ -490,7 +492,7 @@ int main()
 				//expression = "1 1 +";
 				sort_station1 = sort_station(expression);
 				cout << sort_station1 << endl;
-				//sort_station = "-1-1";`
+				sort_station1 = "100 ~";
 				//cout << sort_station << endl;
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
