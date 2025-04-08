@@ -8,8 +8,6 @@ struct Node {
 	Node* next = nullptr;
 	string data;
 };
-
-
 struct Stack {
 private:
 
@@ -337,7 +335,6 @@ string sort_station(string expression) {
 
 	return output;
 }
-
 string toNormalExpression(string expression) {
 	string normal_expression;
 	int size = expression.size();
