@@ -106,7 +106,7 @@ int get_priority(string x, int p = 0) {
 	else if (x == "^") {
 		return 3;
 	}
-	else if (x == "~" && p == 1) {
+	else if (x == "~") {
 		return 10;
 	}
 	else if (x == "sin" || x == "cos" || x == "tg" || x == "sqrt") {
@@ -200,7 +200,6 @@ double stack_machine(string expression) {
 	double ot = 0;// значение по умолчанию
 	bool prev = false;
 	while (ex_ss >> word) {
-		cout << word << endl;
 		if (operations.count(word) == 0 && one_operations.count(word) == 0) {
 			stack1.push(p_top, word);
 
@@ -253,7 +252,6 @@ pair<string, int> get_digit(string x, int i = 0) {
 pair<string, int> get_text(string xv, int j = 0) {
 	string xi;
 	pair<string, int> text;
-	//text.first = "fuck";
 	text.first = "";
 	text.second = 0;
 	for (j; j < xv.size(); j++) {
@@ -290,7 +288,7 @@ string sort_station(string expression) {
 	bool prev_sk = false;
 	for (int i = 0; i < size;) {
 		xi = expression[i];
-		if (!isdigit(expression[i]) && xi != "-" && xi != ".") {
+		if (!isdigit(expression[i]) && xi != ".") {
 			text = get_text(expression, i);
 			string x = text.first;
 			if (prev_oper && x != "(" && x != ")") {
@@ -298,7 +296,6 @@ string sort_station(string expression) {
 			}
 			i = i + text.second;
 
-			//cout << x << endl;
 			if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top)) && x != ")") {
 				if (x == "(") {
 					prev_sk = true;
@@ -317,10 +314,7 @@ string sort_station(string expression) {
 				if (prev_sk == false) {
 					throw runtime_error("Mismatched parenthese");
 				}
-				//cout << "ss" << endl;
 				while (isEmpty(p_top) || top(p_top) != "(") {
-					//cout << op_stack.top() << endl;
-					//cout << (op_stack.top() == "(") << endl;
 					if (isEmpty(p_top)) {
 						throw runtime_error("Mismatched parentheses");
 					}
@@ -330,7 +324,6 @@ string sort_station(string expression) {
 				if (isEmpty(p_top)) {
 					throw runtime_error("Mismatched parentheses");
 				}
-				//cout << top(p_top) << endl;
 				pop(p_top);
 				// Удаляем ")"
 			}
@@ -347,92 +340,7 @@ string sort_station(string expression) {
 				i = i + digit.second;
 			}
 			else {
-				if (xi == "-") {
-					i = i + 1;
-					prev_oper = true;
-					if (isdigit(expression[i])) {
-						digit = get_digit(expression, i);
-						prev_oper = false;
-						if (output == "") {
-							output = "-" + digit.first;
-						}
-						else {
-
-
-							output += " -" + digit.first + " +";
-
-
-						}
-						i = i + digit.second;
-					}
-					else {
-						text = get_text(expression, i);
-						string x = text.first;
-						i = i + text.second;
-						if (prev_oper && x != "(" && x != ")") {
-							throw runtime_error("more than one operator");
-						}
-						prev_oper = true;
-						if (x == "(" || isEmpty(p_top) || get_priority(x) > get_priority(top(p_top))) {
-							if (x == "(") {
-								prev_sk = true;
-							}
-							prev_oper = true;
-							if (x != "(") {
-								push(p_top, x + " -1 *");
-							}
-							else {
-								if (x == "(") {
-									push(p_top, x);
-									push(p_top, xi);
-
-
-								}
-
-							}
-
-						}
-						else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
-							while (!isEmpty(p_top) &&
-								get_priority(x) <= get_priority(top(p_top))) {
-								output += " " + top(p_top);
-								pop(p_top);
-							}
-							push(p_top, x);
-						}
-
-						else if (get_priority(x) <= get_priority(top(p_top)) && get_priority(x) > 0) {
-							while (!isEmpty(p_top) &&
-								get_priority(x) <= get_priority(top(p_top))) {
-								output += " " + top(p_top);
-								pop(p_top);
-							}
-							push(p_top, x);
-						}
-						else if (x == ")") {
-							if (!prev_sk) {
-								throw runtime_error("Mismatched parenthese");
-							}
-							//cout << "ss" << endl;
-							while (isEmpty(p_top) || top(p_top) != "(") {
-								//cout << op_stack.top() << endl;
-								//cout << (op_stack.top() == "(") << endl;
-								if (isEmpty(p_top)) {
-									throw runtime_error("Mismatched parentheses");
-								}
-								output += " " + top(p_top);
-								pop(p_top);
-							}
-							if (isEmpty(p_top)) {
-								throw runtime_error("Mismatched parentheses");
-							}
-							//cout << top(p_top) << endl;
-							pop(p_top);
-							// Удаляем ")"
-						}
-					}
-				}
-				else {
+				
 					//если число то 
 					prev_oper = false;
 					digit = get_digit(expression, i);
@@ -443,7 +351,7 @@ string sort_station(string expression) {
 						output += " " + digit.first;
 					}
 					i = i + digit.second;
-				}
+				
 			}
 
 		}
@@ -463,8 +371,24 @@ string sort_station(string expression) {
 	return output;
 }
 
-void toNormalExpression(string expression) {
+string toNormalExpression(string expression) {
+	string normal_expression;
 
+	for (int i = 0; i < expression.size(); i++) {
+		if (expression[i] == '(' && i + 1 < expression.size() && expression[i + 1] == '-') {
+			normal_expression += "(~";
+			i=i+1; 
+		}
+		else if (expression[i] == '-' && (i == 0 || expression[i - 1] == '(')) {
+			normal_expression += '~';
+		}
+	
+		else {
+			normal_expression += expression[i];
+		}
+	}
+
+	return normal_expression;
 }
 int main()
 {
@@ -489,10 +413,9 @@ int main()
 			if (stoi(x) == 1) {
 				cout << "Input" << endl;
 				getline(cin, expression);
-				//expression = "1 1 +";
+				expression = toNormalExpression(expression);
 				sort_station1 = sort_station(expression);
-				cout << sort_station1 << endl;
-				sort_station1 = "100 ~";
+				//sort_station1 = "100 ~";
 				//cout << sort_station << endl;
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
