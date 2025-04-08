@@ -4,6 +4,30 @@
 #include <set>
 #include<cmath>
 using namespace std;
+#include <iostream>
+#include <string>
+#include<set>
+#include<sstream>
+using namespace std;
+
+
+struct NodeTree
+{
+	string data = "";
+	NodeTree* right = nullptr;
+	NodeTree* left = nullptr;
+	NodeTree* prev = nullptr;
+	/*
+	NodeTree(string data = "", NodeTree* right = nullptr, NodeTree* left = nullptr, NodeTree* prev = nullptr)
+	{
+		data = data;
+		left = left;
+		right = right;
+		prev = right;
+
+	}
+	*/
+};
 struct Node {
 	Node* next = nullptr;
 	string data;
@@ -356,6 +380,84 @@ string toNormalExpression(string expression) {
 
 	return normal_expression;
 }
+void  postfix_print(NodeTree* node) {
+	if (node != nullptr) {
+		postfix_print(node->left);
+		postfix_print(node->right);
+		cout << node->data << " ";
+	}
+
+
+}
+NodeTree* sort_tree_station(string expression) {
+	NodeTree* root = new NodeTree();
+	int size = expression.size();
+	pair<string, int> digit;
+	pair<string, int> text;
+	string ops = "";
+	NodeTree* p = root;
+	for (int i = 0; i < size;)
+	{
+		if (!isdigit(expression[i])) {
+			text = get_text(expression, i);
+			string token = text.first;
+			if (token == "(") {
+				p->left = new NodeTree();
+				p->left->prev = p;
+				p = p->left;
+			}
+			else if (token == ")") {
+
+				if (p->prev != nullptr) {
+					p = p->prev;
+				}
+
+
+			}
+			else {
+				p->data = token;
+				p->right = new NodeTree();
+				p->right->prev = p;
+				p = p->right;
+
+			}
+			i = i + text.second;
+		}
+		else {
+			digit = get_digit(expression, i);
+			p->data = digit.first;
+			//cout << p->data << endl;
+
+			if (p->prev != nullptr) {
+				p = p->prev;
+			}
+
+			i = i + digit.second;
+
+		}
+	}
+	return root;
+}
+string add_m(string x) {
+	string ot = "(";
+	bool oper = false;
+	for (int i = 0; i < x.size(); i++) {
+		if (isdigit(x[i])) {
+			if (oper == false) {
+				ot = ot + "(" + x[i];
+			}
+			else {
+				ot = ot + x[i] + ")";
+				oper = false;
+			}
+		}
+		else {
+			ot = ot + x[i];
+			oper = true;
+		}
+	}
+	return ot;
+}
 int main()
 {
 	cout << "Hello user" << endl;
@@ -371,9 +473,9 @@ int main()
 		try
 		{
 			cout << "Input fun" << endl;
-			cout << "For correct work use (-1) + (-1)" << endl;
-			cout << "1 is input expression" << endl;
-			cout << "2 is exit" << endl;
+			cout << "1 is input expression with Stack sort station" << endl;
+			cout << "2 is input expression with Tree sort station" << endl;
+			cout << "3 is exit" << endl;
 			getline(cin, x);
 			if (stoi(x) == 1) {
 				cout << "Input" << endl;
@@ -384,6 +486,11 @@ int main()
 
 			}
 			else if (stoi(x) == 2) {
+				cout << "Input" << endl;
+				getline(cin, expression);
+				cout << "In Progress" << endl;
+			}
+			else if (stoi(x) == 3) {
 				k = false;
 				break;
 			}
