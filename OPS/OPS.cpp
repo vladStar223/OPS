@@ -461,6 +461,66 @@ string add_m(string x) {
 	}
 	return ot;
 }
+void check_expression(string expression) {
+	if (expression[0] != '(' && expression.size() > 1) {
+		throw runtime_error( "Mismatched parenthese");
+	}
+	int size = expression.size();
+	string xi = "";
+	pair<string, int> digit;
+	pair<string, int> text;
+	bool prev_oper = false;; // есть ли 
+	bool prev_sk = false;
+	for (int i = 0; i < size;) {
+		xi = expression[i];
+		if (!isdigit(expression[i]) && xi != ".") {
+			text = get_text(expression, i);
+			string x = text.first;
+			if (prev_oper && x != "(" && x != ")") {
+				throw runtime_error("more than one operator");
+			}
+			i = i + text.second;
+
+			if (x == "(" && x != ")") {
+				if (x == "(") {
+					prev_sk = true;
+				}
+				else {
+					prev_oper = true;
+				}
+			}
+			else if (one_operations.count(x)>0 || operations.count(x) > 0) {
+				if (prev_oper) {
+					throw runtime_error("more than one operator");
+				}
+				prev_oper = false;
+				
+			}
+			else if (x == ")") {
+				if (prev_sk == false) {
+					throw runtime_error("Mismatched parenthese");
+				}
+			
+			}
+		}
+		else {
+			if (xi == ".") {
+				i = i + 1;
+				prev_oper = false;
+				digit = get_digit(expression, i);
+				i = i + digit.second;
+			}
+			else {
+				//если число то 
+				prev_oper = false;
+				digit = get_digit(expression, i);
+				i = i + digit.second;
+
+			}
+
+		}
+	}
+}
 int main()
 {
 	cout << "Hello user" << endl;
@@ -477,7 +537,7 @@ int main()
 	cout << "1 is normal version" << endl;
 	cout << "0 is test version" << endl;
 	getline(cin, test_s);
-	if (test_s == "1") {
+	if (test_s == "0") {
 		test = true;
 	}
 	do
@@ -494,8 +554,10 @@ int main()
 				getline(cin, expression);
 				expression_n = toNormalExpression(expression);
 				sort_station1 = sort_station(expression_n);
-				cout << "Dop " << expression_n << endl;
-				cout << "Postfix " << sort_station1 << endl;
+				if (test) {
+					cout << "NormalExpression " << expression_n << endl;
+					cout << "Postfix " << sort_station1 << endl;
+				}
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
 			}
@@ -517,11 +579,29 @@ int main()
 				else {
 					expression_n = expression;
 				}
+				try
+				{
+					
+					check_expression(expression_n);
+					
+					
+				}
+				catch (runtime_error exception)
+				{
+					cout << exception.what() << endl;
+				}
+				catch (const std::exception&)
+				{
+					cout << "Unhandle error" << endl;
+				}
+				
 				NodeTree* root = nullptr;
 				root = sort_tree_station(expression_n);
-				cout << "Dop " << expression_n << endl;
-				sort_station1 = postfix_print(root,"");
-				cout << "Postfix " << sort_station1 << endl;
+				sort_station1 = postfix_print(root, "");
+				if (test) {
+					cout << " add_m" << expression_n << endl;
+					cout << "Postfix " << sort_station1 << endl;
+				}
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 			}
 			else {
