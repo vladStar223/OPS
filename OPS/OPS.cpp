@@ -186,7 +186,7 @@ void operationsa_procces(Stack* p_begin, string operation, bool one_opertion = f
 
 
 }
-
+//Стековая машина
 double stack_machine(string expression) {
 	string word;
 	Stack* p_top = stack1.create();
@@ -225,7 +225,7 @@ double stack_machine(string expression) {
 	stack1.pop(p_top);
 	return ot;
 }
-
+//Обработка чисел
 pair<string, int> get_digit(string x, int i = 0) {
 	string xi;
 	pair<string, int> digit;
@@ -244,6 +244,7 @@ pair<string, int> get_digit(string x, int i = 0) {
 	return digit;
 
 }
+//обработка символов
 pair<string, int> get_text(string xv, int j = 0) {
 	string xi;
 	pair<string, int> text;
@@ -272,6 +273,7 @@ pair<string, int> get_text(string xv, int j = 0) {
 	}
 	return text;
 }
+//Сортировочная стация на стеке
 string sort_station(string expression) {
 	string output = "";
 	Stack* p_top = stack1.create();
@@ -369,6 +371,7 @@ string sort_station(string expression) {
 
 	return output;
 }
+//Замена унарного минуса на тильду
 string toNormalExpression(string expression) {
 	string normal_expression;
 	int size = expression.size();
@@ -390,6 +393,7 @@ string toNormalExpression(string expression) {
 
 	return normal_expression;
 }
+//Получение постфиксной формы
 string postfix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
 		ex = postfix_print(node->left, ex);
@@ -398,6 +402,7 @@ string postfix_print(NodeTree* node, string ex = "") {
 	}
 	return ex;
 }
+//Сортировочная стация через дерево
 NodeTree* sort_tree_station(string expression) {
 	NodeTree* root = new NodeTree();
 	int size = expression.size();
@@ -447,6 +452,7 @@ NodeTree* sort_tree_station(string expression) {
 	}
 	return root;
 }
+//Добавление скобочек
 string add_m(string x) {
 	string ot = "(";
 	bool oper = false;
@@ -467,6 +473,7 @@ string add_m(string x) {
 	}
 	return ot;
 }
+//Проверка выражения для сортировочной стации через дерево
 void check_expression(string expression) {
 	int parentheses_count = 0;
 	int size = expression.size();
@@ -529,14 +536,16 @@ void check_expression(string expression) {
 int main()
 {
 	cout << "Hello user" << endl;
-	string data;
-	string da;
-	bool k = false;
-	bool test = false;
+	bool k = false; // Для цикла
+	bool test = false; //Для перевода в режим с откладко
+	//Выражение ввода
 	string expression;
+	//Нормальное выражение ввода
 	string expression_n;
+	//Результат сортировочной стации
 	string sort_station1;
-	string x = "1";
+	string x = "1"; //Выбор режима какулятора 
+	//Специальные штука
 	string test_s;
 	cout << "Input version" << endl;
 	cout << "1 is normal version" << endl;
@@ -574,7 +583,7 @@ int main()
 				cout << "Do you need add brackets?" << endl;
 				cout << "Input  1 is Yes" << endl;
 				cout << "Input  0 is No" << endl;
-				string y;
+				string y; // Выбор режима работы
 				getline(cin, y);
 				cout << "Input" << endl;
 				getline(cin, expression);
