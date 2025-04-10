@@ -384,14 +384,13 @@ string toNormalExpression(string expression) {
 
 	return normal_expression;
 }
-NodeTree* postfix_print(NodeTree* node) {
+string postfix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
-		postfix_print(node->left);
-		postfix_print(node->right);
-		cout << node->data << " ";
+		ex = postfix_print(node->left, ex);
+		ex = postfix_print(node->right, ex);
+		ex += node->data + " ";
 	}
-	return node;
-
+	return ex;
 }
 NodeTree* sort_tree_station(string expression) {
 	NodeTree* root = new NodeTree();
@@ -468,10 +467,19 @@ int main()
 	string data;
 	string da;
 	bool k = false;
+	bool test = false;
 	string expression;
 	string expression_n;
 	string sort_station1;
 	string x = "1";
+	string test_s;
+	cout << "Input version" << endl;
+	cout << "1 is normal version" << endl;
+	cout << "0 is test version" << endl;
+	getline(cin, test_s);
+	if (test_s == "1") {
+		test = true;
+	}
 	do
 	{
 		try
@@ -496,16 +504,25 @@ int main()
 				break;
 			}
 			else if (stoi(x) == 2) {
+				cout << "Do you need add brackets?" << endl;
+				cout << "Input  0 is No" << endl;
+				cout << "Input  1 is Yes" << endl;
+				string y;
+				getline(cin, y);
 				cout << "Input" << endl;
 				getline(cin, expression);
-				expression_n = add_m(expression);
-				
+				if (y == "1") {
+					expression_n = add_m(expression);
+				}
+				else {
+					expression_n = expression;
+				}
 				NodeTree* root = nullptr;
 				root = sort_tree_station(expression_n);
 				cout << "Dop " << expression_n << endl;
-				postfix_print(root);
-				//cout << "Postfix " << sort_station1 << endl;
-				//cout << expression << " = " << stack_machine(sort_station1) << endl;;
+				sort_station1 = postfix_print(root,"");
+				cout << "Postfix " << sort_station1 << endl;
+				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 			}
 			else {
 				cout << "You are Strange" << endl;
