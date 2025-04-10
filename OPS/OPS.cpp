@@ -289,9 +289,13 @@ string sort_station(string expression) {
 				if (x == "(") {
 					prev_sk = true;
 				}
+				else {
+					prev_oper = true;
+				}
 				stack1.push(p_top, x);
 			}
 			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
+				prev_oper = false;
 				while (!stack1.isEmpty(p_top) &&
 					get_priority(x) <= get_priority(stack1.top(p_top))) {
 					output += " " + stack1.top(p_top);
