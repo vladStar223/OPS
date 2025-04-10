@@ -482,6 +482,8 @@ int main()
 				getline(cin, expression);
 				expression_n = toNormalExpression(expression);
 				sort_station1 = sort_station(expression_n);
+				cout << "Dop " << expression_n << endl;
+				cout << "Postfix " << sort_station1 << endl;
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
 			}
