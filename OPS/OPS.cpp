@@ -384,13 +384,13 @@ string toNormalExpression(string expression) {
 
 	return normal_expression;
 }
-void  postfix_print(NodeTree* node) {
+NodeTree* postfix_print(NodeTree* node) {
 	if (node != nullptr) {
 		postfix_print(node->left);
 		postfix_print(node->right);
 		cout << node->data << " ";
 	}
-
+	return node;
 
 }
 NodeTree* sort_tree_station(string expression) {
@@ -491,14 +491,21 @@ int main()
 				cout << expression << " = " << stack_machine(sort_station1) << endl;;
 
 			}
-			else if (stoi(x) == 2) {
-				cout << "Input" << endl;
-				getline(cin, expression);
-				cout << "In Progress" << endl;
-			}
 			else if (stoi(x) == 3) {
 				k = false;
 				break;
+			}
+			else if (stoi(x) == 2) {
+				cout << "Input" << endl;
+				getline(cin, expression);
+				expression_n = add_m(expression);
+				
+				NodeTree* root = nullptr;
+				root = sort_tree_station(expression_n);
+				cout << "Dop " << expression_n << endl;
+				postfix_print(root);
+				//cout << "Postfix " << sort_station1 << endl;
+				//cout << expression << " = " << stack_machine(sort_station1) << endl;;
 			}
 			else {
 				cout << "You are Strange" << endl;
