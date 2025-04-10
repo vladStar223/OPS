@@ -4,13 +4,8 @@
 #include <set>
 #include<cmath>
 using namespace std;
-#include <iostream>
-#include <string>
-#include<set>
-#include<sstream>
-using namespace std;
 
-
+//Узел дерева
 struct NodeTree
 {
 	string data = "";
@@ -27,20 +22,24 @@ struct NodeTree
 
 	}
 	*/
-};
+}; // узел дерево 
+//Ячейка стека
 struct Node {
 	Node* next = nullptr;
 	string data;
 };
+//Структра Стек
 struct Stack {
 private:
 
 	Node* node = nullptr;
-	int size = 0;
+	int size = 0;// размер стека
 public:
 	static Stack* create() {
 		return new Stack();
 	}
+	// добавление
+	//Принимает ссылку на указатель  головы стека и строку добавления
 	void push(Stack*& p_top, string x) {
 		Node* n = new Node;
 		n->data = x;
@@ -55,12 +54,14 @@ public:
 		}
 		p_top->size = p_top->size + 1;
 	}
+	// показывает вверх стека
 	string top(Stack* p_top) {
 		if (p_top == nullptr) {
 			throw "Error";
 		}
 		return p_top->node->data;
 	}
+	// удаляет элемент из стека
 	void pop(Stack*& p_top) {
 		if (p_top == nullptr) {
 			throw "Error";
@@ -71,17 +72,19 @@ public:
 			delete t;
 		}
 	}
-
+	// проверяет  пустой ли стек
 	bool isEmpty(Stack*& p_top) {
 		return (p_top->node == nullptr);
 	}
+	//получает размер стека
 	int get_size(Stack*& p_top) {
 		return p_top->size;
 	}
 };
 Stack stack1;// струкрутра стека
 const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
-const set<string> one_operations = { "sin","cos","tg","sqrt","~"}; // операции доступные сейчас 
+const set<string> one_operations = { "sin","cos","tg","sqrt","~"}; // операции доступные сейчас
+// получает приоритет операции x
 int get_priority(string x, int p = 0) {
 	if (x == "(" || x == ")") {
 		return 0;
@@ -102,6 +105,7 @@ int get_priority(string x, int p = 0) {
 		return 5;
 	}
 }
+// считает
 void operationsa_procces(Stack* p_begin, string operation, bool one_opertion = false) {
 	if ((one_opertion == false && (stack1.get_size(p_begin) <= 1))) {
 		throw runtime_error("Error");
@@ -182,6 +186,7 @@ void operationsa_procces(Stack* p_begin, string operation, bool one_opertion = f
 
 
 }
+
 double stack_machine(string expression) {
 	string word;
 	Stack* p_top = stack1.create();
@@ -220,6 +225,7 @@ double stack_machine(string expression) {
 	stack1.pop(p_top);
 	return ot;
 }
+
 pair<string, int> get_digit(string x, int i = 0) {
 	string xi;
 	pair<string, int> digit;
@@ -281,7 +287,7 @@ string sort_station(string expression) {
 			text = get_text(expression, i);
 			string x = text.first;
 			if (prev_oper && x != "(" && x != ")") {
-				throw runtime_error("more than one operator");
+				throw runtime_error("Duplicate operators");
 			}
 			i = i + text.second;
 
@@ -462,63 +468,62 @@ string add_m(string x) {
 	return ot;
 }
 void check_expression(string expression) {
-	if (expression[0] != '(' && expression.size() > 1) {
-		throw runtime_error( "Mismatched parenthese");
-	}
+	int parentheses_count = 0;
 	int size = expression.size();
 	string xi = "";
 	pair<string, int> digit;
 	pair<string, int> text;
-	bool prev_oper = false;; // есть ли 
-	bool prev_sk = false;
+	bool prev_oper = false;
+	bool prev_di = false;
+
 	for (int i = 0; i < size;) {
 		xi = expression[i];
-		if (!isdigit(expression[i]) && xi != ".") {
+		if (!isdigit(expression[i]) ){
 			text = get_text(expression, i);
 			string x = text.first;
-			if (prev_oper && x != "(" && x != ")") {
-				throw runtime_error("more than one operator");
-			}
-			i = i + text.second;
+			i += text.second;
 
-			if (x == "(" && x != ")") {
-				if (x == "(") {
-					prev_sk = true;
+			if (x == "(") {
+				if (prev_di) {
+					throw runtime_error("Missing operator before '('");
 				}
-				else {
-					prev_oper = true;
-				}
-			}
-			else if (one_operations.count(x)>0 || operations.count(x) > 0) {
-				if (prev_oper) {
-					throw runtime_error("more than one operator");
-				}
+				prev_di = false;
 				prev_oper = false;
-				
 			}
 			else if (x == ")") {
-				if (prev_sk == false) {
-					throw runtime_error("Mismatched parenthese");
+				if (parentheses_count < 0) {
+					throw runtime_error("Mismatched parentheses");
 				}
-			
+				if (prev_oper) {
+					throw runtime_error("Operator before ')'");
+				}
+				prev_di = true;
+				prev_oper = false;
+			}
+			else if (one_operations.count(x) || operations.count(x)) {
+				if ((prev_oper  || !prev_di) && x!="-") {
+					throw runtime_error("Duplicate operators");
+				}
+				if (x != "-") {
+					prev_oper = true;
+					prev_di = false;
+				}
+				
+			}
+			else {
+				throw runtime_error("Invalid token: " + x);
 			}
 		}
 		else {
-			if (xi == ".") {
-				i = i + 1;
-				prev_oper = false;
-				digit = get_digit(expression, i);
-				i = i + digit.second;
-			}
-			else {
-				//если число то 
-				prev_oper = false;
-				digit = get_digit(expression, i);
-				i = i + digit.second;
-
-			}
-
+			digit = get_digit(expression, i);
+			i += digit.second;
+			prev_oper = false;
+			prev_di = true;
 		}
+	}
+
+	if (parentheses_count != 0) {
+		throw runtime_error("Mismatched parentheses");
 	}
 }
 int main()
@@ -567,8 +572,8 @@ int main()
 			}
 			else if (stoi(x) == 2) {
 				cout << "Do you need add brackets?" << endl;
-				cout << "Input  0 is No" << endl;
 				cout << "Input  1 is Yes" << endl;
+				cout << "Input  0 is No" << endl;
 				string y;
 				getline(cin, y);
 				cout << "Input" << endl;
@@ -583,26 +588,29 @@ int main()
 				{
 					
 					check_expression(expression_n);
-					
+					expression_n = toNormalExpression(expression_n);
+					NodeTree* root = nullptr;
+					root = sort_tree_station(expression_n);
+					sort_station1 = postfix_print(root, "");
+					if (test) {
+						cout << "add_m " << expression_n << endl;
+						cout << "NormalExpression " << expression_n << endl;
+						cout << "Postfix " << sort_station1 << endl;
+					}
+					cout << expression << " = " << stack_machine(sort_station1) << endl;;
 					
 				}
 				catch (runtime_error exception)
 				{
 					cout << exception.what() << endl;
+					
 				}
 				catch (const std::exception&)
 				{
 					cout << "Unhandle error" << endl;
+					
 				}
-				
-				NodeTree* root = nullptr;
-				root = sort_tree_station(expression_n);
-				sort_station1 = postfix_print(root, "");
-				if (test) {
-					cout << " add_m" << expression_n << endl;
-					cout << "Postfix " << sort_station1 << endl;
-				}
-				cout << expression << " = " << stack_machine(sort_station1) << endl;;
+			
 			}
 			else {
 				cout << "You are Strange" << endl;
