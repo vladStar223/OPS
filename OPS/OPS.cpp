@@ -471,7 +471,7 @@ string add_m(string x) {
 				close_sk = true;
 
 			}
-			
+
 		}
 		else if (x[i] == ')' || x[i] == '(') {
 			if (oper) {
@@ -487,13 +487,13 @@ string add_m(string x) {
 			ot += x[i];
 
 
-			
+
 		}
 		else {
-			
-			
+
+
 			if (open_sk) {
-				ot =  ot +")";
+				ot = ot + ")";
 				close_sk = true;
 				open_sk = false;
 			}
@@ -502,9 +502,9 @@ string add_m(string x) {
 				open_sk = true;
 				close_sk = false;
 			}
-			ot = ot +x[i];
+			ot = ot + x[i];
 			oper = true;
-			
+
 		}
 	}
 	return ot;
