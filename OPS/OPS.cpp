@@ -482,7 +482,6 @@ void check_expression(string expression) {
 	pair<string, int> text;
 	bool prev_oper = false;
 	bool prev_di = false;
-
 	for (int i = 0; i < size;) {
 		xi = expression[i];
 		if (!isdigit(expression[i]) ){
@@ -580,22 +579,13 @@ int main()
 				break;
 			}
 			else if (stoi(x) == 2) {
-				cout << "Do you need add brackets?" << endl;
-				cout << "Input  1 is Yes" << endl;
-				cout << "Input  0 is No" << endl;
-				string y; // Выбор режима работы
-				getline(cin, y);
+				
+				
 				cout << "Input" << endl;
 				getline(cin, expression);
-				if (y == "1") {
-					expression_n = add_m(expression);
-				}
-				else {
-					expression_n = expression;
-				}
+				expression_n = add_m(expression);
 				try
 				{
-					
 					check_expression(expression_n);
 					expression_n = toNormalExpression(expression_n);
 					NodeTree* root = nullptr;
