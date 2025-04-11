@@ -463,9 +463,6 @@ void check_expression(string expression) {
 			i += text.second;
 
 			if (x == "(") {
-				if (prev_di) {
-					throw runtime_error("Missing operator before '('");
-				}
 				prev_di = false;
 				prev_oper = false;
 			}
@@ -476,16 +473,19 @@ void check_expression(string expression) {
 				if (prev_oper) {
 					throw runtime_error("Operator before ')'");
 				}
-				prev_di = true;
 				prev_oper = false;
+				prev_di = false;
 			}
 			else if (one_operations.count(x) || operations.count(x)) {
-				if ((prev_oper  || !prev_di) && x!="-") {
+				if ((prev_oper) ){
 					throw runtime_error("Duplicate operators");
 				}
-				if (x != "-") {
+				if (x == "-" && prev_di) {
 					prev_oper = true;
 					prev_di = false;
+				}
+				else {
+					prev_oper = true;
 				}
 				
 			}
@@ -541,6 +541,7 @@ int main()
 				try
 				{
 					//expression = "(1-2)/(3-4)*5";
+					check_expression(expression);
 					expression_n = add_m(expression);
 					cout << "Add_m " << expression_n << endl;
 					
