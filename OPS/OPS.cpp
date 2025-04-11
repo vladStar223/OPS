@@ -326,19 +326,12 @@ string prefix_print(NodeTree* node, string ex = "") {
 	return ex;
 
 }
-void print_tree(NodeTree* node, int l = 0) {
+void print_tree(NodeTree* node, int level = 0) {
 	if (node != nullptr) {
-		print_tree(node->right, l + 1);
-		
-		
-		for (int i = 0; i < l; i++) {
-			cout << " ";
-		}
-		cout << node->data;
-		print_tree(node->left, l + 1);
+		print_tree(node->right, level + 1);
+		cout << string(level, ' ') << node->data << endl;
+		print_tree(node->left, level + 1);
 	}
-	cout << "" << endl;
-	
 }
 NodeTree* sort_tree_station(string expression) {
 	NodeTree* root = new NodeTree();
@@ -558,6 +551,7 @@ int main()
 					cout << "Prefix " << prefix << endl;
 					cout << "Infix " << infix << endl;
 					print_tree(root);
+					cout << "" << endl;
 					out << post << endl;
 					out << prefix << endl;
 					out << infix << endl;
