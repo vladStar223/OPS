@@ -454,21 +454,57 @@ NodeTree* sort_tree_station(string expression) {
 }
 //Добавление скобочек
 string add_m(string x) {
-	string ot = "(";
+	string ot = "";
 	bool oper = false;
+	bool prev_sk = false;
+	bool close_sk = false;
+	bool open_sk = false;
 	for (int i = 0; i < x.size(); i++) {
 		if (isdigit(x[i])) {
 			if (oper == false) {
 				ot = ot + "(" + x[i];
+				open_sk = true;
 			}
 			else {
 				ot = ot + x[i] + ")";
 				oper = false;
+				close_sk = true;
+
 			}
+			
+		}
+		else if (x[i] == ')' || x[i] == '(') {
+			if (oper) {
+				ot += "(";
+				oper = false;
+			}
+			if (x[i] == ')') {
+				close_sk = true;
+			}
+			if (x[i] == '(') {
+				open_sk = true;
+			}
+			ot += x[i];
+
+
+			
 		}
 		else {
-			ot = ot + x[i];
+			
+			
+			if (open_sk) {
+				ot =  ot +")";
+				close_sk = true;
+				open_sk = false;
+			}
+			if (close_sk) {
+				ot = "(" + ot;
+				open_sk = true;
+				close_sk = false;
+			}
+			ot = ot +x[i];
 			oper = true;
+			
 		}
 	}
 	return ot;
@@ -583,10 +619,11 @@ int main()
 				
 				cout << "Input" << endl;
 				getline(cin, expression);
+				//expression_n = expression;
 				expression_n = add_m(expression);
 				try
 				{
-					check_expression(expression_n);
+					//check_expression(expression_n);
 					expression_n = toNormalExpression(expression_n);
 					NodeTree* root = nullptr;
 					root = sort_tree_station(expression_n);
