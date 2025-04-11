@@ -500,10 +500,12 @@ int main()
 					NodeTree* root = nullptr;
 					root = sort_tree_station(expression_n);
 					string post = postfix_print(root, "");
+					string prefix = prefix_print(root, "");
+					string infix = infix_print(root, "");
 					cout << "add_m " << expression_n << endl;
-					cout << "Postfix " << sort_station1 << endl;
-					
-					
+					cout << "Postfix " << post << endl;
+					cout << "Prefix " << prefix << endl;
+					cout << "Infix " << infix << endl;
 				}
 				catch (runtime_error exception)
 				{
