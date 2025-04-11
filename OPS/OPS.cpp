@@ -493,24 +493,13 @@ int main()
 			cout << "3 is exit" << endl;
 			getline(cin, x);
 			 if (stoi(x) == 2) {
-				cout << "Do you need add brackets?" << endl;
-				cout << "Input  1 is Yes" << endl;
-				cout << "Input  0 is No" << endl;
-				string y; // Выбор режима работы
-				getline(cin, y);
 				cout << "Input" << endl;
 				getline(cin, expression);
-				if (y == "1") {
-					expression_n = add_m(expression);
-				}
-				else {
-					expression_n = expression;
-				}
 				try
 				{
-					
-					check_expression(expression_n);
-					expression_n = toNormalExpression(expression_n);
+					//expression_n = add_m(expression_n);
+					//expression_n = toNormalExpression(expression_n);
+					//cout << "toNormalExpression" << expression_n << endl;
 					NodeTree* root = nullptr;
 					root = sort_tree_station(expression_n);
 					string post = postfix_print(root, "");
