@@ -309,7 +309,12 @@ string postfix_print(NodeTree* node, string ex = "") {
 string infix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
 		ex = infix_print(node->left,ex);
-		ex += node->data + " ";
+		if (ex == "") {
+			ex += node->data ;
+		}
+		else {
+			ex += node->data + " ";
+		}
 		ex = infix_print(node->right,ex);
 
 	}
@@ -318,7 +323,12 @@ string infix_print(NodeTree* node, string ex = "") {
 //Получение префиксной формы
 string prefix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
-		ex += node->data + " ";
+		if (ex == "" && isdigit(ex[0])) {
+			ex += node->data;
+		}
+		else {
+			ex += node->data + " ";
+		}
 		ex = prefix_print(node->left,ex);
 		ex = prefix_print(node->right,ex);
 
@@ -329,7 +339,10 @@ string prefix_print(NodeTree* node, string ex = "") {
 void print_tree(NodeTree* node, int level = 0) {
 	if (node != nullptr) {
 		print_tree(node->right, level + 1);
-		cout << string(level, ' ') << node->data << endl;
+		for (int i = 0; i < level; i++) { 
+			cout << " ";
+		}
+		cout << node->data << endl;
 		print_tree(node->left, level + 1);
 	}
 }
