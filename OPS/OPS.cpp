@@ -624,9 +624,7 @@ int main()
 				expression_n = add_m(expression);
 				try
 				{
-					check_expression(expression);
-					expression_n = add_m(expression);
-					cout << "Add_m " << expression_n << endl;
+					check_expression(expression);;
 					//check_expression(expression_n);
 					expression_n = toNormalExpression(expression_n);
 					NodeTree* root = nullptr;
