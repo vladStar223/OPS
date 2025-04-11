@@ -323,6 +323,7 @@ string prefix_print(NodeTree* node, string ex = "") {
 
 	}
 	return ex;
+
 }
 void print_tree(NodeTree* node, int l = 0) {
 	if (node != nullptr) {
