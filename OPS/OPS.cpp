@@ -273,104 +273,6 @@ pair<string, int> get_text(string xv, int j = 0) {
 	}
 	return text;
 }
-//Сортировочная стация на стеке
-string sort_station(string expression) {
-	string output = "";
-	Stack* p_top = stack1.create();
-	int size = expression.size();
-	string xi = "";
-	pair<string, int> digit;
-	pair<string, int> text;
-	bool prev_oper = false;; // есть ли 
-	bool prev_sk = false;
-	for (int i = 0; i < size;) {
-		xi = expression[i];
-		if (!isdigit(expression[i]) && xi != ".") {
-			text = get_text(expression, i);
-			string x = text.first;
-			if (prev_oper && x != "(" && x != ")") {
-				throw runtime_error("Duplicate operators");
-			}
-			i = i + text.second;
-
-			if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top)) && x != ")") {
-				if (x == "(") {
-					prev_sk = true;
-				}
-				else {
-					prev_oper = true;
-				}
-				stack1.push(p_top, x);
-			}
-			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
-				prev_oper = false;
-				while (!stack1.isEmpty(p_top) &&
-					get_priority(x) <= get_priority(stack1.top(p_top))) {
-					output += " " + stack1.top(p_top);
-					stack1.pop(p_top);
-				}
-				stack1.push(p_top, x);
-			}
-			else if (x == ")") {
-				if (prev_sk == false) {
-					throw runtime_error("Mismatched parenthese");
-				}
-				while (stack1.isEmpty(p_top) || stack1.top(p_top) != "(") {
-					if (stack1.isEmpty(p_top)) {
-						throw runtime_error("Mismatched parentheses");
-					}
-					output += " " + stack1.top(p_top);
-					stack1.pop(p_top);
-				}
-				if (stack1.isEmpty(p_top)) {
-					throw runtime_error("Mismatched parentheses");
-				}
-				stack1.pop(p_top);
-				// Удаляем ")"
-			}
-
-
-
-		}
-		else {
-			if (xi == ".") {
-				output += ".";
-				i = i + 1;
-				digit = get_digit(expression, i);
-				output += digit.first;
-				i = i + digit.second;
-			}
-			else {
-				
-					//если число то 
-					prev_oper = false;
-					digit = get_digit(expression, i);
-					if (output == "") {
-						output = digit.first;
-					}
-					else {
-						output += " " + digit.first;
-					}
-					i = i + digit.second;
-				
-			}
-
-		}
-	}
-
-	while (!stack1.isEmpty(p_top)) {
-
-
-		if (stack1.top(p_top) == "(" || stack1.top(p_top) == ")") {
-			throw runtime_error("Mismatched parentheses");
-		}
-
-		output += " " + stack1.top(p_top);
-		stack1.pop(p_top);
-	}
-
-	return output;
-}
 //Замена унарного минуса на тильду
 string toNormalExpression(string expression) {
 	string normal_expression;
@@ -394,6 +296,22 @@ string toNormalExpression(string expression) {
 	return normal_expression;
 }
 //Получение постфиксной формы
+string postfix_print(NodeTree* node, string ex = "") {
+	if (node != nullptr) {
+		ex = postfix_print(node->left, ex);
+		ex = postfix_print(node->right, ex);
+		ex += node->data + " ";
+	}
+	return ex;
+}
+string postfix_print(NodeTree* node, string ex = "") {
+	if (node != nullptr) {
+		ex = postfix_print(node->left, ex);
+		ex = postfix_print(node->right, ex);
+		ex += node->data + " ";
+	}
+	return ex;
+}
 string postfix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
 		ex = postfix_print(node->left, ex);
@@ -559,27 +477,11 @@ int main()
 		try
 		{
 			cout << "Input fun" << endl;
-			cout << "1 is input expression with Stack sort station" << endl;
+			
 			cout << "2 is input expression with Tree sort station" << endl;
 			cout << "3 is exit" << endl;
 			getline(cin, x);
-			if (stoi(x) == 1) {
-				cout << "Input" << endl;
-				getline(cin, expression);
-				expression_n = toNormalExpression(expression);
-				sort_station1 = sort_station(expression_n);
-				if (test) {
-					cout << "NormalExpression " << expression_n << endl;
-					cout << "Postfix " << sort_station1 << endl;
-				}
-				cout << expression << " = " << stack_machine(sort_station1) << endl;;
-
-			}
-			else if (stoi(x) == 3) {
-				k = false;
-				break;
-			}
-			else if (stoi(x) == 2) {
+			 if (stoi(x) == 2) {
 				cout << "Do you need add brackets?" << endl;
 				cout << "Input  1 is Yes" << endl;
 				cout << "Input  0 is No" << endl;
