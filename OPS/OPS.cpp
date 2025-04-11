@@ -389,21 +389,39 @@ NodeTree* sort_tree_station(string expression) {
 }
 //Добавление скобочек
 string add_m(string x) {
-	string ot = "(";
+	string ot = "";
 	bool oper = false;
+	bool prev_sk = false;
 	for (int i = 0; i < x.size(); i++) {
 		if (isdigit(x[i])) {
+			
 			if (oper == false) {
-				ot = ot + "(" + x[i];
+				ot = ot+ "(" + x[i];
 			}
 			else {
 				ot = ot + x[i] + ")";
 				oper = false;
 			}
+			prev_sk = false;
+		}
+		else if (x[i] == ')' || x[i] == '(') {
+			if (oper) {
+				ot += "(";
+				oper = false;
+			}
+			ot += x[i];
+			
+			
+			prev_sk = true;
 		}
 		else {
+			if (prev_sk && x[i+1] == ')' && i+1<x.size()) {
+				ot = "(" + ot;
+			}
+			
 			ot = ot + x[i];
 			oper = true;
+			prev_sk = false;
 		}
 	}
 	return ot;
@@ -479,7 +497,7 @@ int main()
 	string expression_n;
 	//Результат сортировочной стации
 	string sort_station1;
-	string x = "1"; //Выбор режима какулятора 
+	string x = "2"; //Выбор режима какулятора 
 	//Специальные штука
 	string test_s;
 	cout << "Input version" << endl;
@@ -491,13 +509,16 @@ int main()
 			
 			cout << "2 is input expression with Tree sort station" << endl;
 			cout << "3 is exit" << endl;
-			getline(cin, x);
+			//getline(cin, x);
 			 if (stoi(x) == 2) {
 				cout << "Input" << endl;
 				getline(cin, expression);
 				try
 				{
-					expression_n = add_m(expression_n);
+					expression = "(1-2)/(3-4)*5";
+					expression_n = add_m(expression);
+					cout << "Add_m " << expression_n << endl;
+					
 					//expression_n = toNormalExpression(expression_n);
 					//cout << "toNormalExpression" << expression_n << endl;
 					NodeTree* root = nullptr;
@@ -510,6 +531,7 @@ int main()
 					cout << "Prefix " << prefix << endl;
 					cout << "Infix " << infix << endl;
 					print_tree(root);
+					
 				}
 				catch (runtime_error exception)
 				{
