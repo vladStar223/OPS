@@ -3,6 +3,7 @@
 #include<string>
 #include <set>
 #include<cmath>
+#include <fstream>
 using namespace std;
 
 //Узел дерева
@@ -506,6 +507,12 @@ void check_expression(string expression) {
 }
 int main()
 {
+	std::ofstream out;          // поток для записи
+	out.open("hello.txt");      // открываем файл для записи
+	if (out.is_open())
+	{
+		cout << "File open" << std::endl;
+	}
 	cout << "Hello user" << endl;
 	bool k = false; // Для цикла
 	bool test = false; //Для перевода в режим с откладко
@@ -545,10 +552,15 @@ int main()
 					string prefix = prefix_print(root, "");
 					string infix = infix_print(root, "");
 					cout << "add_m " << expression_n << endl;
-					cout << "Postfix " << post << endl;
-					cout << "Prefix " << prefix << endl;
-					cout << "Infix " << infix << endl;
-					print_tree(root);
+					//cout << "Postfix " << post << endl;
+					//cout << "Prefix " << prefix << endl;
+					//cout << "Infix " << infix << endl;
+					//print_tree(root);
+					out << post << endl;
+					out << prefix << endl;
+					out << infix << endl;
+					std::cout << "File has been written" << std::endl;
+
 					
 				}
 				catch (runtime_error exception)
@@ -579,7 +591,7 @@ int main()
 
 	} while (!k);
 	cout << "Thank for using" << endl;
-
+	out.close();
 
 
 
