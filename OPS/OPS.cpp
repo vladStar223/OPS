@@ -392,36 +392,54 @@ string add_m(string x) {
 	string ot = "";
 	bool oper = false;
 	bool prev_sk = false;
+	bool close_sk = false;
+	bool open_sk = false;
 	for (int i = 0; i < x.size(); i++) {
 		if (isdigit(x[i])) {
-			
 			if (oper == false) {
-				ot = ot+ "(" + x[i];
+				ot = ot + "(" + x[i];
+				open_sk = true;
 			}
 			else {
 				ot = ot + x[i] + ")";
 				oper = false;
+				close_sk = true;
+
 			}
-			prev_sk = false;
+
 		}
 		else if (x[i] == ')' || x[i] == '(') {
 			if (oper) {
 				ot += "(";
 				oper = false;
 			}
+			if (x[i] == ')') {
+				close_sk = true;
+			}
+			if (x[i] == '(') {
+				open_sk = true;
+			}
 			ot += x[i];
-			
-			
-			prev_sk = true;
+
+
+
 		}
 		else {
-			if (prev_sk && x[i+1] == ')' && i+1<x.size()) {
-				ot = "(" + ot;
+
+
+			if (open_sk) {
+				ot = ot + ")";
+				close_sk = true;
+				open_sk = false;
 			}
-			
+			if (close_sk) {
+				ot = "(" + ot;
+				open_sk = true;
+				close_sk = false;
+			}
 			ot = ot + x[i];
 			oper = true;
-			prev_sk = false;
+
 		}
 	}
 	return ot;
@@ -509,13 +527,13 @@ int main()
 			
 			cout << "2 is input expression with Tree sort station" << endl;
 			cout << "3 is exit" << endl;
-			//getline(cin, x);
+			getline(cin, x);
 			 if (stoi(x) == 2) {
 				cout << "Input" << endl;
 				getline(cin, expression);
 				try
 				{
-					expression = "(1-2)/(3-4)*5";
+					//expression = "(1-2)/(3-4)*5";
 					expression_n = add_m(expression);
 					cout << "Add_m " << expression_n << endl;
 					
