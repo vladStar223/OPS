@@ -307,9 +307,9 @@ string postfix_print(NodeTree* node, string ex = "") {
 //получение инфиксной формы
 string infix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
-		ex = infix_print(node->left);
+		ex = infix_print(node->left,ex);
 		ex += node->data + " ";
-		ex = infix_print(node->right);
+		ex = infix_print(node->right,ex);
 
 	}
 	return ex;
@@ -318,8 +318,8 @@ string infix_print(NodeTree* node, string ex = "") {
 string prefix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
 		ex += node->data + " ";
-		ex = prefix_print(node->left);
-		ex = prefix_print(node->right);
+		ex = prefix_print(node->left,ex);
+		ex = prefix_print(node->right,ex);
 
 	}
 	return ex;
