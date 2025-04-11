@@ -406,7 +406,7 @@ string add_m(string x) {
 		if (isdigit(x[i])) {
 			if (oper == false) {
 				ot = ot + "(" + x[i];
-				open_sk = true;
+				//open_sk = true;
 			}
 			else {
 				ot = ot + x[i] + ")";
@@ -437,12 +437,12 @@ string add_m(string x) {
 
 			if (open_sk) {
 				ot = ot + ")";
-				close_sk = true;
+				//close_sk = true;
 				open_sk = false;
 			}
 			if (close_sk) {
 				ot = "(" + ot;
-				open_sk = true;
+				//open_sk = true;
 				close_sk = false;
 			}
 			ot = ot + x[i];
