@@ -518,17 +518,15 @@ void check_expression(string expression) {
 	pair<string, int> text;
 	bool prev_oper = false;
 	bool prev_di = false;
+
 	for (int i = 0; i < size;) {
 		xi = expression[i];
-		if (!isdigit(expression[i]) ){
+		if (!isdigit(expression[i])) {
 			text = get_text(expression, i);
 			string x = text.first;
 			i += text.second;
 
 			if (x == "(") {
-				if (prev_di) {
-					throw runtime_error("Missing operator before '('");
-				}
 				prev_di = false;
 				prev_oper = false;
 			}
@@ -539,18 +537,21 @@ void check_expression(string expression) {
 				if (prev_oper) {
 					throw runtime_error("Operator before ')'");
 				}
-				prev_di = true;
 				prev_oper = false;
+				prev_di = false;
 			}
 			else if (one_operations.count(x) || operations.count(x)) {
-				if ((prev_oper  || !prev_di) && x!="-") {
+				if ((prev_oper)) {
 					throw runtime_error("Duplicate operators");
 				}
-				if (x != "-") {
+				if (x == "-" && prev_di) {
 					prev_oper = true;
 					prev_di = false;
 				}
-				
+				else {
+					prev_oper = true;
+				}
+
 			}
 			else {
 				throw runtime_error("Invalid token: " + x);
