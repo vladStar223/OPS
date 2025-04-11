@@ -304,25 +304,26 @@ string postfix_print(NodeTree* node, string ex = "") {
 	}
 	return ex;
 }
+//получение инфиксной формы
+string infix_print(NodeTree* node, string ex = "") {
+	if (node != nullptr) {
+		ex = infix_print(node->left);
+		ex += node->data + " ";
+		ex = infix_print(node->right);
+
+	}
+	return ex;
+}
 //Получение префиксной формы
 string prefix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
-		ex = postfix_print(node->left, ex);
-		ex = postfix_print(node->right, ex);
 		ex += node->data + " ";
+		ex = prefix_print(node->left);
+		ex = prefix_print(node->right);
+
 	}
 	return ex;
 }
-//Получение прямой формы
-string right_print(NodeTree* node, string ex = "") {
-	if (node != nullptr) {
-		ex = postfix_print(node->left, ex);
-		ex = postfix_print(node->right, ex);
-		ex += node->data + " ";
-	}
-	return ex;
-}
-//Сортировочная стация через дерево
 NodeTree* sort_tree_station(string expression) {
 	NodeTree* root = new NodeTree();
 	int size = expression.size();
@@ -468,12 +469,6 @@ int main()
 	//Специальные штука
 	string test_s;
 	cout << "Input version" << endl;
-	cout << "1 is normal version" << endl;
-	cout << "0 is test version" << endl;
-	getline(cin, test_s);
-	if (test_s == "0") {
-		test = true;
-	}
 	do
 	{
 		try
@@ -504,13 +499,10 @@ int main()
 					expression_n = toNormalExpression(expression_n);
 					NodeTree* root = nullptr;
 					root = sort_tree_station(expression_n);
-					sort_station1 = postfix_print(root, "");
-					if (test) {
-						cout << "add_m " << expression_n << endl;
-						cout << "NormalExpression " << expression_n << endl;
-						cout << "Postfix " << sort_station1 << endl;
-					}
-					cout << expression << " = " << stack_machine(sort_station1) << endl;;
+					string post = postfix_print(root, "");
+					cout << "add_m " << expression_n << endl;
+					cout << "Postfix " << sort_station1 << endl;
+					
 					
 				}
 				catch (runtime_error exception)
