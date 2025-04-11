@@ -304,7 +304,8 @@ string postfix_print(NodeTree* node, string ex = "") {
 	}
 	return ex;
 }
-string postfix_print(NodeTree* node, string ex = "") {
+//Получение префиксной формы
+string prefix_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
 		ex = postfix_print(node->left, ex);
 		ex = postfix_print(node->right, ex);
@@ -312,7 +313,8 @@ string postfix_print(NodeTree* node, string ex = "") {
 	}
 	return ex;
 }
-string postfix_print(NodeTree* node, string ex = "") {
+//Получение прямой формы
+string right_print(NodeTree* node, string ex = "") {
 	if (node != nullptr) {
 		ex = postfix_print(node->left, ex);
 		ex = postfix_print(node->right, ex);
