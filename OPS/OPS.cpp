@@ -497,7 +497,7 @@ int main()
 				getline(cin, expression);
 				try
 				{
-					//expression_n = add_m(expression_n);
+					expression_n = add_m(expression_n);
 					//expression_n = toNormalExpression(expression_n);
 					//cout << "toNormalExpression" << expression_n << endl;
 					NodeTree* root = nullptr;
