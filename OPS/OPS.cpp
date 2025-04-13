@@ -614,7 +614,6 @@ int main()
 				cout << "Input" << endl;
 				getline(cin, expression);
 				expression_n = toNormalExpression(expression);
-				cout << "NormalExpression " << expression_n << endl;
 				sort_station1 = sort_station(expression_n);
 				if (test) {
 					cout << "NormalExpression " << expression_n << endl;
@@ -633,12 +632,12 @@ int main()
 				cout << "Input" << endl;
 				getline(cin, expression);
 				//expression_n = expression;
-				expression_n = add_m(expression);
+				expression_n = toNormalExpression(expression);
+				expression_n = add_m(expression_n);
 				try
 				{
 					check_expression(expression);;
 					//check_expression(expression_n);
-					expression_n = toNormalExpression(expression_n);
 					NodeTree* root = nullptr;
 					root = sort_tree_station(expression_n);
 					sort_station1 = postfix_print(root, "");
