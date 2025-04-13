@@ -56,8 +56,8 @@ public:
 	}
 	// показывает вверх стека
 	string top(Stack* p_top) {
-		if (p_top == nullptr) {
-			throw "Error";
+		if (p_top->node == nullptr) {
+			throw runtime_error("Error");
 		}
 		return p_top->node->data;
 	}
@@ -303,7 +303,7 @@ string sort_station(string expression) {
 				stack1.push(p_top, x);
 			}
 			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
-				prev_oper = false;
+				prev_oper = true;
 				while (!stack1.isEmpty(p_top) &&
 					get_priority(x) <= get_priority(stack1.top(p_top))) {
 					output += " " + stack1.top(p_top);
