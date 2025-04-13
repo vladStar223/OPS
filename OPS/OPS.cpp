@@ -296,6 +296,7 @@ string sort_station(string expression) {
 			if (x == "(" || stack1.isEmpty(p_top) || get_priority(x) > get_priority(stack1.top(p_top)) && x != ")") {
 				if (x == "(") {
 					prev_sk = true;
+					prev_oper = false;
 				}
 				else {
 					prev_oper = true;
@@ -303,15 +304,25 @@ string sort_station(string expression) {
 				stack1.push(p_top, x);
 			}
 			else if (get_priority(x) <= get_priority(stack1.top(p_top)) && get_priority(x) > 0) {
-				prev_oper = true;
 				while (!stack1.isEmpty(p_top) &&
 					get_priority(x) <= get_priority(stack1.top(p_top))) {
 					output += " " + stack1.top(p_top);
 					stack1.pop(p_top);
 				}
+				
+				
+				if (x != "~") {
+					prev_oper = true;
+				}
+				else {
+					prev_oper = false;
+				}
+				
+				
 				stack1.push(p_top, x);
 			}
 			else if (x == ")") {
+				prev_oper = false;
 				if (prev_sk == false) {
 					throw runtime_error("Mismatched parenthese");
 				}
@@ -603,6 +614,7 @@ int main()
 				cout << "Input" << endl;
 				getline(cin, expression);
 				expression_n = toNormalExpression(expression);
+				cout << "NormalExpression " << expression_n << endl;
 				sort_station1 = sort_station(expression_n);
 				if (test) {
 					cout << "NormalExpression " << expression_n << endl;
