@@ -81,7 +81,7 @@ public:
 		return p_top->size;
 	}
 };
-Stack stack1;// струкрутра стека
+Stack stack1;// структура стека
 const set<string> operations = { "+","-","*","/","^","(",")" }; // операции доступные сейчас 
 const set<string> one_operations = { "sin","cos","tg","sqrt","~"}; // операции доступные сейчас
 // получает приоритет операции x
